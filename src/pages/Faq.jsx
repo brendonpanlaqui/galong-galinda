@@ -1,18 +1,13 @@
 import { useState } from 'react';
 
 export default function Faq() {
-  // State to track which category is currently selected ('all', 'about', 'products', 'officiating')
   const [activeCategory, setActiveCategory] = useState('all');
-  
-  // State to track which FAQ item is currently expanded (null means all closed)
   const [openFaqId, setOpenFaqId] = useState(null);
 
-  // Helper to toggle the accordion open/close
   const toggleFaq = (id) => {
     setOpenFaqId(openFaqId === id ? null : id);
   };
 
-  // The raw FAQ data mapped into an array for cleaner rendering and filtering
   const faqs = [
     {
       id: 1,
@@ -254,22 +249,32 @@ export default function Faq() {
     }
   ];
 
-  // Filter the FAQs based on the active state
   const filteredFaqs = activeCategory === 'all' 
     ? faqs 
     : faqs.filter(faq => faq.category === activeCategory);
 
   return (
     <main>
-      <section className="w-full bg-surface-container-low py-space-xl px-margin-mobile lg:px-margin" id="faqs-section">
-        <div className="max-w-4xl mx-auto flex flex-col items-center">
-          
-          <div className="text-center mb-space-lg">
-            <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface mt-1">Frequently Asked Questions</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs max-w-2xl">
+      
+      {/* Hero Showcase Section (Matched to Home/About) */}
+      <section className="relative w-full overflow-hidden bg-surface-container-lowest pt-16 lg:pt-24 pb-12 border-b border-surface-container-high/60">
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
+        <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+        
+        <div className="max-w-4xl mx-auto px-4 lg:px-8 relative z-10 flex flex-col items-center text-center gap-6">
+          <div className="flex flex-col gap-3">
+            <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] text-on-surface font-bold tracking-tight">
+              Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Questions</span>
+            </h1>
+            <p className="font-body-lg text-lg text-on-surface-variant leading-relaxed mt-2 max-w-2xl mx-auto">
               Find comprehensive answers regarding Galóng Galínda, student initiatives, our Nutrifit & Armfit products, and sports officiating services.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="w-full bg-surface-container-low py-12 px-margin-mobile lg:px-margin" id="faqs-section">
+        <div className="max-w-4xl mx-auto flex flex-col items-center">
 
           {/* Category Filter Pills */}
           <div className="flex flex-wrap items-center justify-center gap-space-xs mb-space-lg w-full" id="faq-category-pills">

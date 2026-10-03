@@ -3,22 +3,19 @@ export default function Events() {
     <main>
       
       {/* Hero Showcase Section */}
-      <section className="relative w-full overflow-hidden bg-surface-container-lowest py-12 lg:py-16 border-b border-surface-container-high/60">
-        <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
-        <div className="absolute left-10 bottom-0 w-80 h-80 rounded-full bg-secondary/5 blur-3xl pointer-events-none"></div>
+      <section className="relative w-full overflow-hidden bg-surface-container-lowest py-16 lg:py-24 border-b border-surface-container-high/60">
+        {/* Atmospheric Dual-Energy Glows */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
+        <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+        
         <div className="max-w-7xl mx-auto px-4 lg:px-8 relative z-10 flex flex-col gap-6">
           <div className="flex flex-col gap-3 max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant self-start font-label text-xs font-bold uppercase tracking-wider">
-            </div>
-            <h1 className="font-headline text-3xl sm:text-4xl lg:text-5xl text-on-surface font-bold tracking-tight">
-              Gallery &amp; Events
+            <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] text-on-surface font-bold tracking-tight">
+              Gallery &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Events</span>
             </h1>
-            <p className="font-body text-base lg:text-lg text-on-surface-variant leading-relaxed">
+            <p className="font-body-lg text-lg text-on-surface-variant leading-relaxed mt-2">
               Explore authentic photo documentation from <span className="text-primary font-semibold">Galóng Galínda’s</span> institutional activities, from PE Days and community events to educational seminars, workshops, and sports officiating clinics. Our gallery captures the learning, teamwork, energy, and memorable experiences shared by participants throughout every event.
             </p>
-          </div>
-          {/* Quick Event Filter Pills */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
           </div>
         </div>
       </section>

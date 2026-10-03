@@ -8,37 +8,39 @@ export default function Services() {
     <main>
       <div className="flex flex-col w-full">
         
-        {/* SECTION 1: HERO OVERVIEW */}
-        <section className="relative w-full bg-surface-container-lowest overflow-hidden py-space-lg lg:py-space-xl border-b border-surface-container-high/50">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+        <section className="relative w-full bg-surface-container-lowest overflow-hidden py-16 lg:py-24 border-b border-surface-container-high/50">
+          {/* Atmospheric Dual-Energy Glows */}
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
+          <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
           
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin relative z-10">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg lg:gap-space-xl">
-              <div className="max-w-3xl flex flex-col gap-space-sm">
-                <h1 className="font-display-hero text-headline-lg lg:text-display-hero text-on-surface font-bold tracking-tight">
-                  Products &amp; Services
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg lg:gap-space-xl items-center">
+              <div className="lg:col-span-8 flex flex-col gap-space-sm">
+                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] text-on-surface font-bold tracking-tight">
+                  Products &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Services</span>
                 </h1>
-                <div className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed mt-2">
+                <div className="font-body-lg text-lg text-on-surface-variant leading-relaxed mt-4">
                   <p>Galóng Galínda offers sports officiating services, referee clinics, and event support designed for schools, sports organizations, and community events.</p>
                   <p className="mt-2">We also feature carefully selected nutrition and personal-care products like Nutrifit Crackers and ArmFeet Deodorant Powder to support an active, healthy collegiate lifestyle.</p>
                 </div>
               </div>
               
-              {/* Highlights Pill Box */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-space-sm p-space-md rounded-xl bg-surface-container-low shadow-sm border border-surface-container-highest/30 self-stretch lg:w-72 shrink-0">
-                <a href="#officiating" className="flex items-center gap-space-sm p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
-                  <span className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">sports</span>
-                  <span className="font-headline-sm text-[15px] font-bold text-on-surface">Officiating</span>
-                </a>
-                <a href="#nutrifit" className="flex items-center gap-space-sm p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
-                  <span className="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">bakery_dining</span>
-                  <span className="font-headline-sm text-[15px] font-bold text-on-surface">Nutrifit</span>
-                </a>
-                <a href="#armfeet" className="flex items-center gap-space-sm p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
-                  <span className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">clean_hands</span>
-                  <span className="font-headline-sm text-[15px] font-bold text-on-surface">ArmFeet</span>
-                </a>
+              {/* Highlights Pill Box (Enhanced with glass effect to match) */}
+              <div className="lg:col-span-4 flex flex-col">
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-space-sm p-space-md rounded-xl bg-surface-container-lowest/80 backdrop-blur-sm shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-surface-container-highest self-stretch shrink-0">
+                  <a href="#officiating" className="flex items-center gap-space-sm p-3 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
+                    <span className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">sports</span>
+                    <span className="font-headline-sm text-[15px] font-bold text-on-surface">Officiating</span>
+                  </a>
+                  <a href="#nutrifit" className="flex items-center gap-space-sm p-3 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
+                    <span className="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">bakery_dining</span>
+                    <span className="font-headline-sm text-[15px] font-bold text-on-surface">Nutrifit</span>
+                  </a>
+                  <a href="#armfeet" className="flex items-center gap-space-sm p-3 rounded-lg bg-surface-container-lowest hover:bg-surface-container transition-colors group">
+                    <span className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">clean_hands</span>
+                    <span className="font-headline-sm text-[15px] font-bold text-on-surface">ArmFeet</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

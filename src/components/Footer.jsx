@@ -7,13 +7,15 @@ export default function Footer() {
         
         <div className="flex flex-col gap-space-md">
           <div className="flex items-center gap-space-sm">
-            <img alt="Galóng Galínda Emblem" className="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UvKpD-zHCQyaZIeS2Nkl27SryE_Ty4VAfv7v4v73k1iuvStj2b_GlzkBTU5OSxlub-pXkM7vMuVaRmDxMOK5eqNvqgEfr7DgDaRNQ2oGUcbxhNIT7npFMjiwucTbY4GJtEkjKgFQBeLW_xP9IEnKtkvn-DFDAtAulSs0e8UTAtIgagVoWu3lfJSHLlG_fEZoWQiEmzzlLdz5jWyaEDb6No9cPrA-utoXnSiR5u8hIFbkSN3tckL7m50I6sEG8U_h4My50vHasx7A" />
+            <img alt="Galóng Galínda Emblem" className="w-8 h-8 rounded-full object-cover" src="/gallery/sticker%20(2).webp" />
             <span className="font-headline-sm text-headline-sm font-bold text-primary tracking-tight">GALÓNG GALÍNDA</span>
           </div>
           <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">Empowering physical education educators, student-athletes, and sports leaders across Central Luzon through kinetic mastery, sports pedagogy, and authentic collegiate community leadership.</p>
           <div className="flex items-center gap-space-sm pt-space-xs">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary hover:bg-secondary hover:text-on-secondary transition-all shadow-sm" title="Visit Galóng Galínda on Facebook">
-              <span className="material-symbols-outlined text-[20px]">public</span>
+            <a href="https://www.facebook.com/share/1C6jJJMqRT/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary hover:bg-secondary hover:text-on-secondary transition-all shadow-sm" title="Visit Galóng Galínda on Facebook">
+              <svg className="w-[20px] h-[20px] fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+              </svg>
             </a>
           </div>
         </div>
@@ -23,7 +25,7 @@ export default function Footer() {
           <ul className="flex flex-col gap-space-xs">
             <li className="py-1"><Link to="/" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Home</Link></li>
             <li className="py-1"><Link to="/about" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">About Organization</Link></li>
-            <li className="py-1"><Link to="/services" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Services & Training Modules</Link></li>
+            <li className="py-1"><Link to="/services" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Products & Services</Link></li>
             <li className="py-1"><Link to="/events" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Events & Documentation</Link></li>
             <li className="py-1"><Link to="/faq" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Frequently Asked Questions</Link></li>
             <li className="py-1"><Link to="/contact" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors">Contact Campus Office</Link></li>
@@ -35,7 +37,7 @@ export default function Footer() {
           <div className="flex flex-col gap-space-sm text-on-surface-variant font-body-sm text-body-sm">
             <div className="flex items-start gap-space-xs">
               <span className="material-symbols-outlined text-primary text-[18px] mt-0.5">location_on</span>
-              <span>City College of Angeles, Arayat Blvd., Brgy. Pampang, Angeles City, Pampanga</span>
+              <span>Arayat Blvd., Brgy. Pampang, Angeles City, Pampanga</span>
             </div>
             <div className="flex items-center gap-space-xs">
               <span className="material-symbols-outlined text-primary text-[18px]">call</span>
@@ -62,11 +64,21 @@ export default function Footer() {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin mt-space-xl pt-space-md border-t border-surface-container-highest/60 flex flex-col md:flex-row items-center justify-between gap-space-sm text-center md:text-left">
-        <p className="font-body-sm text-body-sm text-on-surface-variant">© 2026 Galóng Galínda. All Rights Reserved.</p>
-        <div className="inline-flex items-center gap-space-xs text-tertiary font-label-md text-label-md">
-          <span className="material-symbols-outlined text-[16px]">school</span>
-          <span>NOTICE: THIS WEBSITE IS FOR EDUCATIONAL PURPOSES ONLY</span>
+      <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin mt-space-xl pt-space-md border-t border-surface-container-highest/60 flex flex-col gap-space-md">
+        
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant">
+          <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+          <Link to="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+          <Link to="/refund" className="hover:text-primary transition-colors">Refund & Return Policy</Link>
+          <Link to="/cookies" className="hover:text-primary transition-colors">Cookie Information</Link>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-between gap-space-sm text-center md:text-left">
+          <p className="font-body-sm text-body-sm text-on-surface-variant">© 2026 Galóng Galínda. All Rights Reserved.</p>
+          <div className="inline-flex items-center gap-space-xs text-tertiary font-label-md text-[11px] uppercase tracking-wider">
+            <span className="material-symbols-outlined text-[14px]">school</span>
+            <span>NOTICE: THIS WEBSITE IS FOR EDUCATIONAL PURPOSES ONLY</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -3,6 +3,13 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
+import Events from './pages/Events';
+import Faq from './pages/Faq';
+import Contact from './pages/Contact';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Refund from './pages/Refund';
+import Cookies from './pages/Cookies';
 
 // Simple placeholder components for missing pages to prevent routing errors
 const Placeholder = ({ title }) => (
@@ -17,11 +24,15 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<Placeholder title="About us" />} />
-          <Route path="services" element={<Placeholder title="Services & Workshops" />} />
-          <Route path="events" element={<Placeholder title="Gallery & Events" />} />
-          <Route path="faq" element={<Placeholder title="FAQs" />} />
-          <Route path="contact" element={<Placeholder title="Contact Us" />} />
+          <Route path="about" element={<About />} />
+          <Route path="services" element={<Services />} />
+          <Route path="events" element={<Events />} />
+          <Route path="faq" element={<Faq />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="privacy" element={<Privacy />} />
+          <Route path="terms" element={<Terms />} />
+          <Route path="refund" element={<Refund />} />
+          <Route path="cookies" element={<Cookies />} />
         </Route>
       </Routes>
     </BrowserRouter>

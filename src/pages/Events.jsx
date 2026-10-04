@@ -1,8 +1,69 @@
+import { useState, useEffect } from 'react';
+import Papa from 'papaparse';
+
 export default function Events() {
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [galleryEvents, setGalleryEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 1. PASTE YOUR PUBLISHED "UPCOMING" TAB CSV LINK HERE:
+    const upcomingCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=1373412542&single=true&output=csv";
+
+    // 2. PASTE YOUR PUBLISHED "EVENTS" TAB CSV LINK HERE:
+    const eventsCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=0&single=true&output=csv";
+
+    // Fetch Upcoming Events
+    Papa.parse(upcomingCsvUrl, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const validUpcoming = results.data.filter(item => item.eventTitle && item.eventDate);
+        setUpcomingEvents(validUpcoming);
+      },
+      error: (err) => console.error("Error fetching upcoming events:", err)
+    });
+
+    // Fetch Past Gallery Events
+    Papa.parse(eventsCsvUrl, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        const validData = results.data.filter(item => item.eventId && item.imgSrc);
+        const groupedEventsMap = validData.reduce((acc, row) => {
+          if (!acc[row.eventId]) {
+            acc[row.eventId] = {
+              eventId: row.eventId,
+              eventTitle: row.eventTitle,
+              eventDesc: row.eventDesc,
+              category: row.category,
+              photos: []
+            };
+          }
+          acc[row.eventId].photos.push(row);
+          return acc;
+        }, {});
+
+        setGalleryEvents(Object.values(groupedEventsMap));
+        setIsLoading(false);
+      },
+      error: (error) => {
+        console.error("Error fetching events spreadsheet data:", error);
+        setIsLoading(false);
+      }
+    });
+  }, []);
+
+  const filteredEvents = activeFilter === 'all' 
+    ? galleryEvents 
+    : galleryEvents.filter(event => event.category === activeFilter);
+
   return (
     <main>
       
-      {/* Hero Showcase Section */}
       <section className="relative w-full overflow-hidden bg-surface-container-lowest py-16 lg:py-24 border-b border-surface-container-high/60">
         {/* Atmospheric Dual-Energy Glows */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
@@ -20,7 +81,80 @@ export default function Events() {
         </div>
       </section>
 
-      {/* EVENT SHOWCASE 1: The Art of the Call */}
+      {/* SECTION: UPCOMING EVENTS & SCHEDULES (DYNAMIC FROM GOOGLE SHEETS) */}
+      <section className="w-full py-12 lg:py-16 bg-surface-container-low border-b border-surface-container-high/60" id="section-upcoming">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="flex flex-col gap-2 max-w-3xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-badge text-[10px] uppercase tracking-wider font-bold self-start">
+                <span className="material-symbols-outlined text-[14px]">event</span>
+                Calendar
+              </div>
+              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Upcoming Events &amp; Schedules</h2>
+              <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
+                Join our upcoming seminars, tournaments, and community outreach programs. Secure your slots early!
+              </p>
+            </div>
+          </div>
+
+          {/* Upcoming Events Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {upcomingEvents.map((item, index) => (
+              <div key={index} className="flex flex-col bg-surface-container-lowest rounded-2xl p-6 border border-surface-container-high/60 shadow-sm justify-between gap-6 group hover:shadow-md transition-all">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-label-badge text-[10px] uppercase font-bold">
+                      {item.status || "Upcoming"}
+                    </span>
+                    <span className="font-label text-xs text-on-surface-variant flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px] text-primary">calendar_today</span>
+                      {item.eventDate}
+                    </span>
+                  </div>
+                  <h3 className="font-headline text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                    {item.eventTitle}
+                  </h3>
+                  <p className="font-body text-xs text-on-surface-variant leading-relaxed">
+                    {item.description || item.desc}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 pt-4 border-t border-surface-container-high/50">
+                  <div className="flex items-center justify-between text-xs font-label text-on-surface-variant">
+                    <span className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">schedule</span> {item.eventTime}
+                    </span>
+                    <span className="flex items-center gap-1 font-semibold text-on-surface">
+                      <span className="material-symbols-outlined text-[14px] text-tertiary">location_on</span> {item.venue}
+                    </span>
+                  </div>
+                  {item.ctaLink && (
+                    <a 
+                      href={item.ctaLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-label-md text-center transition-colors shadow-sm flex items-center justify-center gap-1.5"
+                    >
+                      <span>View Details</span>
+                      <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {upcomingEvents.length === 0 && !isLoading && (
+              <div className="col-span-full py-12 text-center text-on-surface-variant font-body-sm bg-surface-container-lowest rounded-2xl border border-surface-container-high/60">
+                No upcoming events scheduled at the moment. Please check back soon!
+              </div>
+            )}
+          </div>
+
+        </div>
+      </section>
+
+      {/* EVENT SHOWCASE 1: The Art of the Call (HARDCODED) */}
       <section className="w-full bg-surface-container-low py-12 lg:py-16 border-b border-surface-container-high/60" id="section-art-of-the-call">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -30,33 +164,24 @@ export default function Events() {
                 Providing participants with practical knowledge and hands-on learning through specialized seminars and workshops.
               </p>
             </div>
-            {/* Key takeaways stats/chips */}
-            <div className="flex flex-wrap items-center gap-2 shrink-0">
-            </div>
           </div>
           
-          {/* Rich Gallery Grid for The Art of the Call */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Main highlight card: Stage Cadre Delegation */}
             <div className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
               <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-                <img alt="City College of Angeles covered court stage, full referee cadre delegation with 'The Art of the Call' banner" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(7).jpg"  />
+                <img alt="Referee delegation stage" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(7).jpg"  />
               </div>
               <div className="p-6 flex flex-col justify-between flex-1 gap-4">
                 <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
                   Developing the skills and confidence of aspiring officials through technical training, demonstrations, and actual officiating experiences.
                 </p>
-                <div className="flex flex-wrap items-center gap-4 pt-2 text-on-surface-variant font-label text-xs font-semibold border-t border-surface-container-high/50">
-                </div>
               </div>
             </div>
             
-            {/* Secondary Grid (Cards 2 & 3): Photo booth + Lecture Session */}
             <div className="lg:col-span-5 flex flex-col gap-6">
-              {/* Photo Booth Fun Frame */}
               <div className="flex flex-col sm:flex-row lg:flex-row bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
                 <div className="relative w-full sm:w-48 lg:w-48 h-52 shrink-0 overflow-hidden">
-                  <img alt="Photo booth frame 'The Art of the Call', referees with whistles and volleyball penalty cards" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(6).jpg"  />
+                  <img alt="Photo booth frame" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(6).jpg"  />
                 </div>
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
@@ -72,14 +197,13 @@ export default function Events() {
                 </div>
               </div>
               
-              {/* Floor Lecture & Discussion Session */}
               <div className="flex flex-col sm:flex-row lg:flex-row bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
                 <div className="relative w-full sm:w-48 lg:w-48 h-52 shrink-0 overflow-hidden">
-                  <img alt="Lecture discussion session with facilitators holding microphones addressing sitting PE students on court" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(5).jpg"  />
+                  <img alt="Lecture discussion session" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(5).jpg"  />
                 </div>
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface"><div className="">Sports Officiating</div></h4>
+                    <h4 className="font-headline text-base font-bold text-on-surface">Sports Officiating</h4>
                     <div className="font-body text-xs text-on-surface-variant mt-1.5 leading-relaxed">Providing participants with practical knowledge and hands-on learning through specialized seminars and workshops.</div>
                   </div>
                   <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant mt-3">
@@ -90,71 +214,12 @@ export default function Events() {
               </div>
             </div>
           </div>
-          
-          {/* Bottom 3 Cards of Workshop */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 4: Practical court session & oath */}
-            <div className="flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative h-56 w-full overflow-hidden">
-                <img alt="Practical court session: PE students standing in formation with right hand raised taking referee oath and practicing hand signals" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(4).jpg" />
-              </div>
-              <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                <div>
-                  <h4 className="font-headline text-base font-bold text-on-surface">Practical Drills &amp; Arbiter's Oath</h4>
-                  <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                    Students lined up on court with hands raised, taking their officiating oath and rehearsing synchronized hand signals in front of the projection clinic.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                  <span className="">Hand Signals Practice</span>
-                  <span className="material-symbols-outlined text-[16px] text-secondary">pan_tool</span>
-                </div>
-              </div>
-            </div>
-            {/* Card 5: Full delegation stage portrait */}
-            <div className="flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative h-56 w-full overflow-hidden">
-                <img alt="Wide group cohort shot on CCA stage with City College of Angeles sign and The Art of the Call backdrop" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(3).jpg"  />
-              </div>
-              <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                <div>
-                  <h4 className="font-headline text-base font-bold text-on-surface">Official Workshop Certification</h4>
-                  <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                    The complete batch of accredited student arbiters, PE teachers, and seminar facilitators celebrating successful clinic completion on the CCA main stage.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                  <span className="">Stage Delegation</span>
-                  <span className="material-symbols-outlined text-[16px] text-primary">groups_3</span>
-                </div>
-              </div>
-            </div>
-            {/* Card 6: Keynote & Opening address */}
-            <div className="flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative h-56 w-full overflow-hidden">
-                <img alt="Speaker at official wooden lectern addressing attendees on court" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(2).jpg"  />
-              </div>
-              <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                <div>
-                  <h4 className="font-headline text-base font-bold text-on-surface">Keynote &amp; Officiating Ethics</h4>
-                  <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                    Keynote presentation delivered at the CCA official podium outlining impartiality, sports law principles, integrity, and ethical conduct for youth sports.
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                  <span className="">Podium Session</span>
-                  <span className="material-symbols-outlined text-[16px] text-tertiary">co_present</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* EVENT SHOWCASE 2: PE Days */}
+      {/* EVENT SHOWCASE 2: PE Days (HARDCODED) */}
       <section className="w-full py-12 lg:py-16 bg-surface-container-lowest border-b border-surface-container-high/60" id="section-pe-days">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-10">
-          {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-surface-container-high/60 pb-8">
             <div className="flex flex-col gap-2 max-w-3xl">
               <h2 className="font-headline text-2xl lg:text-4xl font-bold text-on-surface tracking-tight">PE Days</h2>
@@ -162,34 +227,25 @@ export default function Events() {
                 Celebrating movement, teamwork, creativity, and camaraderie through engaging physical activities and community experiences.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 text-on-surface-variant font-label text-xs font-bold bg-surface-container-low px-4 py-2 rounded-full border border-surface-container-high/60 shrink-0 self-start md:self-end">
-            </div>
           </div>
           
-          {/* Featured Hero Mosaic / Dual Highlights for PE Days */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Primary Highlight Card: Mass Aerobics */}
             <div className="lg:col-span-7 flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
               <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-                <img alt="Hundreds of PE students performing synchronized rhythmic mass aerobics in quadrangle" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(2).jpg" />
-                <div className="absolute inset-0 bg-gradient-to-t from-on-surface/90 via-black/30 to-transparent flex flex-col justify-end p-6 text-white">
-                </div>
+                <img alt="Mass aerobics" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(2).jpg" />
               </div>
               <div className="p-6 flex flex-col justify-between flex-1 gap-4">
                 <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                  Where learning meets movement and every moment becomes an experience. <br></br><br></br>
+                  Where learning meets movement and every moment becomes an experience. <br/><br/>
                   Each event reflects our commitment to galing, karunungan, pakikiisa, at pakikisama, creating opportunities to learn, participate, and grow together.
                 </p>
-                <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-surface-container-high/50">
-                </div>
               </div>
             </div>
             
-            {/* Secondary Highlight Card: Blazing Phoenix Cauldron */}
             <div className="lg:col-span-5 flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
               <div className="relative w-full h-64 sm:h-72 overflow-hidden">
-                <img alt="Towering Olympic ceremonial flame blazing in quadrangle" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(5).jpg" />
-                <span className="absolute top-3 right-3 bg-primary text-white font-label text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider">Ceremonial Flame</span>
+                <img alt="Cauldron" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(5).jpg" />
+                <span className="absolute top-3 right-3 bg-primary text-white font-label text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider shadow-sm">Ceremonial Flame</span>
               </div>
               <div className="p-6 flex flex-col justify-between flex-1 gap-4">
                 <div className="flex flex-col gap-2">
@@ -198,177 +254,71 @@ export default function Events() {
                     Ignited by student torchbearers to herald the athletic tournaments, the ceremonial flame symbolizes the fiery determination and rise of every student-athlete within our community.
                   </p>
                 </div>
-                <div className="p-3.5 rounded-xl bg-surface-container-lowest border border-surface-container-high/60 flex items-start gap-3 mt-1">
-                  <span className="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">shield</span>
-                  <div className="flex flex-col">
-                    <span className="font-headline text-xs font-bold text-on-surface">Official Athlete's Pledge</span>
-                    <span className="font-body text-xs text-on-surface-variant leading-relaxed">Commitment to fair play, mutual respect, and clean sportsmanship.</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
-          
-          {/* PE Days Photo Gallery Grid (8 Gallery Cards) */}
-          <div className="flex flex-col gap-4 pt-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline text-xl font-bold text-on-surface">Highlights</h3>
+        </div>
+      </section>
+
+      {/* NEW DYNAMIC EVENT GROUPS (FED FROM GOOGLE SHEETS) */}
+      <section className="w-full py-12 lg:py-16 bg-background border-t border-surface-container-high/60" id="section-dynamic-uploads">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
+
+          {isLoading ? (
+            <div className="w-full flex flex-col items-center justify-center py-16 gap-4">
+              <div className="w-10 h-10 border-4 border-surface-container-highest border-t-primary rounded-full animate-spin"></div>
+              <span className="font-label text-[11px] text-on-surface-variant uppercase tracking-wider font-bold">Syncing latest archives...</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              {/* Card 1: Torch Relay */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Ceremonial bamboo torch lighting into cauldron bowl" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(3).jpg" />
+          ) : (
+            <div className="flex flex-col gap-16">
+              {filteredEvents.length === 0 && (
+                <div className="w-full py-16 text-center flex flex-col items-center gap-3">
+                  <span className="material-symbols-outlined text-4xl text-surface-container-highest">photo_library</span>
+                  <div className="text-on-surface-variant font-body-sm">
+                    No archive events have been appended from the spreadsheet yet.
+                  </div>
                 </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">The Lighting of the Cauldron</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      Delegation leaders bearing bamboo torches together to ignite the ceremonial cauldron.
+              )}
+
+              {filteredEvents.map((event) => (
+                <div key={event.eventId} className="flex flex-col gap-6 pt-10 mt-2 border-t border-surface-container-high/60 first:border-0 first:pt-0 first:mt-0">
+                  <div className="flex flex-col gap-2 max-w-3xl mb-2">
+                    <h2 className="font-headline text-2xl lg:text-4xl font-bold text-on-surface tracking-tight">
+                      {event.eventTitle}
+                    </h2>
+                    <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
+                      {event.eventDesc}
                     </p>
                   </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Torch Relay</span>
-                    <span className="material-symbols-outlined text-[16px] text-tertiary">local_fire_department</span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {event.photos.map((photo, index) => (
+                      <div key={index} className="flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md group">
+                        <div className="relative h-56 w-full overflow-hidden">
+                          <img alt={photo.photoTitle} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={photo.imgSrc} />
+                          <span className="absolute top-3 right-3 bg-secondary text-white font-label text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider shadow-sm">
+                            {photo.badge}
+                          </span>
+                        </div>
+                        <div className="p-5 flex flex-col flex-1 justify-between gap-3">
+                          <div className="flex flex-col gap-1.5">
+                            <h4 className="font-headline text-base font-bold text-on-surface">{photo.photoTitle}</h4>
+                            <p className="font-body text-xs text-on-surface-variant leading-relaxed">
+                              {photo.photoDesc}
+                            </p>
+                          </div>
+                          <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
+                            <span className="">{photo.location}</span>
+                            <span className="material-symbols-outlined text-[16px] text-primary">{photo.icon}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-              
-              {/* Card 2: Phoenix Emblem Flame */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Towering Olympic ceremonial flame blazing in quadrangle" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(5).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Towering Flame</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      The majestic fire standing as a real-world embodiment of the rising Phoenix emblem.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Ceremonial Opening</span>
-                    <span className="material-symbols-outlined text-[16px] text-primary">whatshot</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 3: Kinesthetic Mass Aerobics */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="PE students executing synchronized rhythmic stretches in custom white uniforms" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(2).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Kinesthetic Mass Aerobics</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      PE students executing synchronized rhythmic stretches in custom white PE uniforms.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Field Choreography</span>
-                    <span className="material-symbols-outlined text-[16px] text-secondary">groups</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 4: Dynamic Field Drills */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Dynamic formation shifts during quadrangle performance" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(8).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Dynamic Field Drills</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      High-tempo formation shifts highlighting agility, stamina, and cooperative team movement.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Applied Kinesiology</span>
-                    <span className="material-symbols-outlined text-[16px] text-secondary">directions_run</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 5: Solemn Assembly & Anthem */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Students, faculty, and committee standing solemnly with hands over chests" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(4).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Solemn Assembly &amp; Anthem</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      Students, faculty, and committee standing solemnly with hands over chests during the opening Philippine national anthem.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Opening Assembly</span>
-                    <span className="material-symbols-outlined text-[16px] text-on-surface">flag</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 6: Purple Cheering Squad */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Batch section members displaying vibrant handmade placards and balloons" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(6).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Purple Cheering Squad</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      Batch section members displaying vibrant handmade placards, balloons, and high-volume cheering cadences.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Section Spirit</span>
-                    <span className="material-symbols-outlined text-[16px] text-secondary">celebration</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 7: Faculty & Leader Camaraderie */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Dedicated PE faculty advisors and student organizers posing together" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(7).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Faculty &amp; Leader Camaraderie</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      Dedicated PE faculty advisors and student organizers posing together with yellow batch batons and commemorative IDs.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Academic Guidance</span>
-                    <span className="material-symbols-outlined text-[16px] text-tertiary">diversity_3</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Card 8: The Roaring Grandstand Crowd */}
-              <div className="flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-all duration-300 hover:shadow-md group">
-                <div className="relative h-56 w-full overflow-hidden">
-                  <img alt="Hundreds of spectators gathered under festive collegiate pennant streamers" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(1).jpg" />
-                </div>
-                <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">The Roaring Grandstand Crowd</h4>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed mt-1">
-                      Hundreds of spectators gathered under festive collegiate pennant streamers cheering enthusiastically for their classes.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                    <span className="">Festival Atmosphere</span>
-                    <span className="material-symbols-outlined text-[16px] text-primary">campaign</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </section>
 

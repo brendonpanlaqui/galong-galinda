@@ -10,6 +10,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Refund from './pages/Refund';
 import Cookies from './pages/Cookies';
+import ScrollToTop from './components/ScrollToTop';
 
 // Simple placeholder components for missing pages to prevent routing errors
 const Placeholder = ({ title }) => (
@@ -21,6 +22,7 @@ const Placeholder = ({ title }) => (
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

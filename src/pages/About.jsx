@@ -4,34 +4,34 @@ export default function About() {
     {
       category: "Event Management & Coordination",
       members: [
-        { role: "Event Manager", name: "Angela E. Ellegue", img: "https://ui-avatars.com/api/?name=Angela+Ellegue&background=ffdad6&color=410002&size=256" },
-        { role: "Ass. Manager", name: "Edmon S. Licup", img: "https://ui-avatars.com/api/?name=Edmon+Licup&background=dae1ff&color=001849&size=256" },
-        { role: "Coordinator", name: "Jasper A. Dalusung", img: "https://ui-avatars.com/api/?name=Jasper+Dalusung&background=ffdcc6&color=301400&size=256" },
+        { role: "Event Manager", name: "Angela E. Ellegue", img: "/gallery/team/pic%20(2).jpg" },
+        { role: "Ass. Manager", name: "Edmon S. Licup", img: "/gallery/team/pic%20(1).jpg" },
+        { role: "Coordinator", name: "Jasper A. Dalusung", img: "/gallery/team/pic%20(7).jpg" },
       ]
     },
     {
       category: "Budget & Finance",
       members: [
-        { role: "Budget", name: "Alfreda Joy E. Magisa", img: "https://ui-avatars.com/api/?name=Alfreda+Magisa&background=eaedff&color=131b2e&size=256" },
-        { role: "Budget", name: "Nicole A. Quinto", img: "https://ui-avatars.com/api/?name=Nicole+Quinto&background=eaedff&color=131b2e&size=256" },
+        { role: "Budget", name: "Alfreda Joy E. Magisa", img: "/gallery/team/pic%20(3).jpg" },
+        { role: "Budget", name: "Nicole A. Quinto", img: "/gallery/team/pic%20(6).jpg" },
       ]
     },
     {
       category: "Infrastructure & Security",
       members: [
-        { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "https://ui-avatars.com/api/?name=Sean+Quismondo&background=f2f3ff&color=131b2e&size=256" },
-        { role: "Infrastructure", name: "Arvi John S. Solano", img: "https://ui-avatars.com/api/?name=Arvi+Solano&background=f2f3ff&color=131b2e&size=256" },
-        { role: "Security", name: "Aaron C. Cortez", img: "https://ui-avatars.com/api/?name=Aaron+Cortez&background=dae2fd&color=131b2e&size=256" },
-        { role: "Security", name: "Mikel Dean P. Lobo", img: "https://ui-avatars.com/api/?name=Mikel+Lobo&background=dae2fd&color=131b2e&size=256" },
+        { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "/gallery/team/pic%20(5).jpg" },
+        { role: "Infrastructure", name: "Arvi John S. Solano", img: "/gallery/team/pic%20(4).jpg" },
+        { role: "Security", name: "Aaron C. Cortez", img: "/gallery/team/pic%20(8).jpg" },
+        { role: "Security", name: "Mikel Dean P. Lobo", img: "/gallery/team/pic%20(9).jpg" },
       ]
     },
     {
       category: "Information & Logistics",
       members: [
-        { role: "Information", name: "Christine Joy S. Valdevieso", img: "https://ui-avatars.com/api/?name=Christine+Valdevieso&background=ffb4ab&color=410002&size=256" },
-        { role: "Information", name: "Niña Reachelle M. Nunag", img: "https://ui-avatars.com/api/?name=Niña+Nunag&background=ffb4ab&color=410002&size=256" },
-        { role: "Logistics", name: "Jonaira M. Bonsa", img: "https://ui-avatars.com/api/?name=Jonaira+Bonsa&background=b3c5ff&color=001849&size=256" },
-        { role: "Logistics", name: "Andrew G. Magpantay", img: "https://ui-avatars.com/api/?name=Andrew+Magpantay&background=b3c5ff&color=001849&size=256" }
+        { role: "Information", name: "Christine Joy S. Valdevieso", img: "/gallery/team/pic%20(10).jpg" },
+        { role: "Information", name: "Niña Reachelle M. Nunag", img: "/gallery/team/pic%20(11).jpg" },
+        { role: "Logistics", name: "Jonaira M. Bonsa", img: "/gallery/team/pic%20(12).jpg" },
+        { role: "Logistics", name: "Andrew G. Magpantay", img: "/gallery/team/pic%20(13).jpg" }
       ]
     }
   ];
@@ -49,14 +49,15 @@ export default function About() {
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
               
-              <div className="lg:col-span-8 flex flex-col gap-4">
+              {/* Left Column: Text Content */}
+              <div className="lg:col-span-8 flex flex-col gap-space-sm">
                 <div className="flex flex-wrap items-center gap-space-xs"></div>
-                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] font-bold text-on-surface tracking-tight">
-                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm bg-[length:200%_200%]">Galóng Galínda</span>
+                <h1 className="font-display-hero text-display-hero-mobile lg:text-display-hero font-bold text-on-surface tracking-tight leading-tight">
+                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Galóng Galínda</span>
                 </h1>
-                <div className="flex flex-col gap-2 font-body text-lg text-on-surface-variant leading-relaxed mt-2">
-                  <p>
-                    Our organization focuses on the <b className="text-on-surface font-semibold">Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
+                <div className="flex flex-col gap-space-sm text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
+                  <p className="font-normal text-on-surface">
+                    Our organization focuses on the <b>Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
                   </p>
                 </div>
               </div>

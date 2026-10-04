@@ -1,4 +1,41 @@
 export default function About() {
+  // Team data grouped by department for the new split-role design
+  const teamGroups = [
+    {
+      category: "Event Management & Coordination",
+      members: [
+        { role: "Event Manager", name: "Angela E. Ellegue", img: "https://ui-avatars.com/api/?name=Angela+Ellegue&background=ffdad6&color=410002&size=256" },
+        { role: "Ass. Manager", name: "Edmon S. Licup", img: "https://ui-avatars.com/api/?name=Edmon+Licup&background=dae1ff&color=001849&size=256" },
+        { role: "Coordinator", name: "Jasper A. Dalusung", img: "https://ui-avatars.com/api/?name=Jasper+Dalusung&background=ffdcc6&color=301400&size=256" },
+      ]
+    },
+    {
+      category: "Budget & Finance",
+      members: [
+        { role: "Budget", name: "Alfreda Joy E. Magisa", img: "https://ui-avatars.com/api/?name=Alfreda+Magisa&background=eaedff&color=131b2e&size=256" },
+        { role: "Budget", name: "Nicole A. Quinto", img: "https://ui-avatars.com/api/?name=Nicole+Quinto&background=eaedff&color=131b2e&size=256" },
+      ]
+    },
+    {
+      category: "Infrastructure & Security",
+      members: [
+        { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "https://ui-avatars.com/api/?name=Sean+Quismondo&background=f2f3ff&color=131b2e&size=256" },
+        { role: "Infrastructure", name: "Arvi John S. Solano", img: "https://ui-avatars.com/api/?name=Arvi+Solano&background=f2f3ff&color=131b2e&size=256" },
+        { role: "Security", name: "Aaron C. Cortez", img: "https://ui-avatars.com/api/?name=Aaron+Cortez&background=dae2fd&color=131b2e&size=256" },
+        { role: "Security", name: "Mikel Dean P. Lobo", img: "https://ui-avatars.com/api/?name=Mikel+Lobo&background=dae2fd&color=131b2e&size=256" },
+      ]
+    },
+    {
+      category: "Information & Logistics",
+      members: [
+        { role: "Information", name: "Christine Joy S. Valdevieso", img: "https://ui-avatars.com/api/?name=Christine+Valdevieso&background=ffb4ab&color=410002&size=256" },
+        { role: "Information", name: "Niña Reachelle M. Nunag", img: "https://ui-avatars.com/api/?name=Niña+Nunag&background=ffb4ab&color=410002&size=256" },
+        { role: "Logistics", name: "Jonaira M. Bonsa", img: "https://ui-avatars.com/api/?name=Jonaira+Bonsa&background=b3c5ff&color=001849&size=256" },
+        { role: "Logistics", name: "Andrew G. Magpantay", img: "https://ui-avatars.com/api/?name=Andrew+Magpantay&background=b3c5ff&color=001849&size=256" }
+      ]
+    }
+  ];
+
   return (
     <main>
       <div className="flex flex-col w-full">
@@ -12,15 +49,14 @@ export default function About() {
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
               
-              {/* Left Column: Text Content */}
-              <div className="lg:col-span-8 flex flex-col gap-space-sm">
+              <div className="lg:col-span-8 flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-space-xs"></div>
-                <h1 className="font-display-hero text-display-hero-mobile lg:text-display-hero font-bold text-on-surface tracking-tight leading-tight">
-                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Galóng Galínda</span>
+                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] font-bold text-on-surface tracking-tight">
+                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm bg-[length:200%_200%]">Galóng Galínda</span>
                 </h1>
-                <div className="flex flex-col gap-space-sm text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
-                  <p className="font-normal text-on-surface">
-                    Our organization focuses on the <b>Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
+                <div className="flex flex-col gap-2 font-body text-lg text-on-surface-variant leading-relaxed mt-2">
+                  <p>
+                    Our organization focuses on the <b className="text-on-surface font-semibold">Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
                   </p>
                 </div>
               </div>
@@ -94,7 +130,7 @@ export default function About() {
                 <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through teamwork and active participation</p>
               </div>
               
-              <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-surface-container-highest shadow-sm flex flex-col gap-space-xs hover:border-on-surface-variant hover:shadow-md transition-all">
+               <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-tertiary/20 shadow-sm flex flex-col gap-space-xs hover:border-tertiary hover:shadow-md transition-all">
                 <div className="flex items-center justify-between mb-1">
                   <div className="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
                     <span className="material-symbols-outlined text-[22px]">diversity_3</span>
@@ -151,34 +187,65 @@ export default function About() {
           </div>
         </section>
 
-        {/* SECTION 4: OUR TEAM */}
+        {/* SECTION 4: OUR TEAM (REDESIGNED FOR ROLES & MOBILE 2-COLUMN) */}
         <section className="w-full py-space-xl bg-background">
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin flex flex-col gap-space-lg">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-2">
               <div className="flex flex-col gap-space-xs max-w-3xl">
-                <span className="font-label-badge text-label-badge text-primary uppercase tracking-widest">THE MINDS &amp; HANDS BEHIND GALÓNG GALÍNDA</span>
+                <span className="font-label-badge text-label-badge text-primary uppercase tracking-widest">BPEd-401 Group 1</span>
                 <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Team</h2>
                 <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                  Each member contributes different skills and responsibilities in planning, coordination, documentation, communication, program implementation, and event management.
+                  The minds and hands behind Galóng Galínda. Each member contributes different skills and responsibilities in planning, coordination, documentation, communication, program implementation, and event management.
                 </p>
               </div>
             </div>
             
-            <div className="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-surface-container-high/80 grid grid-cols-1 md:grid-cols-2 gap-space-md items-center">
-              <div className="relative h-64 rounded-xl overflow-hidden shadow-sm">
-                <img alt="Galóng Galínda Executive Committee" className="w-full h-full object-cover" src="/gallery/so%20(7).jpg"  />
-              </div>
-              <div className="relative h-64 rounded-xl overflow-hidden shadow-sm">
-                <img alt="CCA Student Delegates and Arbiters" className="w-full h-full object-cover" src="/gallery/so%20(3).jpg"  />
-              </div>
+            {/* Split Roles Grid Container */}
+            <div className="flex flex-col gap-12 lg:gap-16">
+              {teamGroups.map((group, groupIdx) => (
+                <div key={groupIdx} className="flex flex-col gap-6">
+                  {/* Department Title */}
+                  <h3 className="font-headline-md text-xl md:text-2xl font-bold text-on-surface border-b border-surface-container-high pb-3">
+                    {group.category}
+                  </h3>
+                  
+                  {/* Members Grid (2 Columns on Mobile, 4-5 on Desktop) */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-8 lg:gap-x-6 lg:gap-y-10">
+                    {group.members.map((member, memberIdx) => (
+                      <div key={memberIdx} className="flex flex-col items-center group">
+                        
+                        {/* Portrait Image Container */}
+                        <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-surface-container-low mb-3 shadow-sm border border-surface-container-high/40">
+                          <img 
+                            src={member.img} 
+                            alt={member.name} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        
+                        {/* Text Styling (Matched to reference image) */}
+                        <h4 className="font-headline-sm text-[15px] sm:text-base font-bold text-on-surface text-center leading-snug">
+                          {member.name}
+                        </h4>
+                        <span className="font-body-sm text-[13px] text-on-surface-variant text-center mt-0.5">
+                          {member.role}
+                        </span>
+
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
+
           </div>
         </section>
 
         {/* SECTION 5: CLOSING ANTHEM */}
         <section className="w-full py-space-xl bg-surface-container-low border-y border-surface-container-high/60">
           <div className="max-w-5xl mx-auto px-margin-mobile lg:px-margin text-center flex flex-col items-center gap-space-md">
-            <div className="inline-flex items-center gap-space-xs px-3 py-1 rounded-full bg-primary-fixed text-primary font-label-badge text-label-badge uppercase tracking-widest">
+            <div className="inline-flex items-center gap-space-xs px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blurtext-primary font-label-badge text-label-badge uppercase tracking-widest">
               <span className="material-symbols-outlined text-[16px]">local_fire_department</span>
               Official Motto &amp; Anthem
             </div>

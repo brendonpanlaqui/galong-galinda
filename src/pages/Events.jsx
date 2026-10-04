@@ -41,9 +41,6 @@ export default function Events() {
             <div className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
               <div className="relative w-full h-80 sm:h-96 overflow-hidden">
                 <img alt="City College of Angeles covered court stage, full referee cadre delegation with 'The Art of the Call' banner" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(7).jpg"  />
-                <div className="absolute inset-0 bg-gradient-to-t from-on-surface/90 via-black/25 to-transparent flex flex-col justify-end p-6 text-white">
-                  <h3 className="font-headline text-lg sm:text-xl font-bold">Official Officiating Delegation</h3>
-                </div>
               </div>
               <div className="p-6 flex flex-col justify-between flex-1 gap-4">
                 <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">

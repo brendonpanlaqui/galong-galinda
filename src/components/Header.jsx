@@ -1,9 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Header() {
   const location = useLocation();
   const path = location.pathname;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Check initial state from local storage or OS preference
+  useEffect(() => {
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark');
+      localStorage.theme = 'light';
+      setIsDarkMode(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.theme = 'dark';
+      setIsDarkMode(true);
+    }
+  };
   
   // State to manage mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,7 +80,15 @@ export default function Header() {
         </nav>
         
         <div className="flex items-center gap-space-md">
-          
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full bg-surface-container hover:bg-surface-container-highest text-on-surface-variant transition-colors flex items-center justify-center"
+            aria-label="Toggle Dark Mode"
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {isDarkMode ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
           
           {/* Mobile Hamburger Button */}
           <button 

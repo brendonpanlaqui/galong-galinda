@@ -3,8 +3,109 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-surface-container-lowest: #ffffff;
+    --color-primary-fixed: #ffdad6;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-surface-container: #eaedff;
+    --color-primary-fixed-dim: #ffb4ab;
+    --color-inverse-on-surface: #eef0ff;
+    --color-surface-dim: #d2d9f4;
+    --color-outline: #906f6b;
+    --color-tertiary-fixed-dim: #ffb784;
+    --color-background: #faf8ff;
+    --color-on-secondary-container: #f9f7ff;
+    --color-tertiary-container: #ae5800;
+    --color-on-primary-fixed-variant: #93000d;
+    --color-on-surface: #131b2e;
+    --color-error: #ba1a1a;
+    --color-surface-container-high: #e2e7ff;
+    --color-tertiary: #8a4400;
+    --color-on-tertiary-fixed-variant: #713700;
+    --color-surface-bright: #faf8ff;
+    --color-on-primary-container: #fff1ef;
+    --color-tertiary-fixed: #ffdcc6;
+    --color-inverse-surface: #283044;
+    --color-secondary-fixed-dim: #b3c5ff;
+    --color-inverse-primary: #ffb4ab;
+    --color-primary-container: #d62828;
+    --color-surface: #faf8ff;
+    --color-on-secondary-fixed-variant: #003fa4;
+    --color-primary: #b20112;
+    --color-on-background: #131b2e;
+    --color-surface-container-highest: #dae2fd;
+    --color-on-surface-variant: #5c403d;
+    --color-secondary-fixed: #dae1ff;
+    --color-surface-variant: #dae2fd;
+    --color-surface-tint: #bd1119;
+    --color-on-tertiary-container: #fff1ea;
+    --color-surface-container-low: #f2f3ff;
+    --color-on-secondary: #ffffff;
+    --color-on-error-container: #93000a;
+    --color-on-primary: #ffffff;
+    --color-on-primary-fixed: #410002;
+    --color-outline-variant: #e5bdb9;
+    --color-on-tertiary-fixed: #301400;
+    --color-secondary-container: #0266ff;
+    --color-secondary: #0050cc;
+    --color-on-secondary-fixed: #001849;
+    --color-on-tertiary: #ffffff;
+  }
+
+  .dark {
+    --color-surface-container-lowest: #0b0e15;
+    --color-primary-fixed: #ffdad6;
+    --color-on-error: #690005;
+    --color-error-container: #93000a;
+    --color-surface-container: #181f30;
+    --color-primary-fixed-dim: #ffb4ab;
+    --color-inverse-on-surface: #131b2e;
+    --color-surface-dim: #0e1420;
+    --color-outline: #a08c89;
+    --color-tertiary-fixed-dim: #ffb784;
+    --color-background: #0b0e15;
+    --color-on-secondary-container: #b3c5ff;
+    --color-tertiary-container: #ffdcc6;
+    --color-on-primary-fixed-variant: #93000d;
+    --color-on-surface: #e2e2ec;
+    --color-error: #ffb4ab;
+    --color-surface-container-high: #202a42;
+    --color-tertiary: #ffb784;
+    --color-on-tertiary-fixed-variant: #713700;
+    --color-surface-bright: #333e5c;
+    --color-on-primary-container: #ffdad6;
+    --color-tertiary-fixed: #ffdcc6;
+    --color-inverse-surface: #e2e2ec;
+    --color-secondary-fixed-dim: #b3c5ff;
+    --color-inverse-primary: #bd1119;
+    --color-primary-container: #93000a;
+    --color-surface: #0b0e15;
+    --color-on-secondary-fixed-variant: #003fa4;
+    --color-primary: #ffb4ab;
+    --color-on-background: #e2e2ec;
+    --color-surface-container-highest: #283554;
+    --color-on-surface-variant: #d3c2bf;
+    --color-secondary-fixed: #dae1ff;
+    --color-surface-variant: #534341;
+    --color-surface-tint: #ffb4ab;
+    --color-on-tertiary-container: #ffdcc6;
+    --color-surface-container-low: #111724;
+    --color-on-secondary: #002871;
+    --color-on-error-container: #ffdad6;
+    --color-on-primary: #690005;
+    --color-on-primary-fixed: #410002;
+    --color-outline-variant: #534341;
+    --color-on-tertiary-fixed: #301400;
+    --color-secondary-container: #003fa4;
+    --color-secondary: #b3c5ff;
+    --color-on-secondary-fixed: #001849;
+    --color-on-tertiary: #4a2400;
+  }
+
   html, body { margin: 0; padding: 0; overscroll-behavior: none; }
   main > :first-child { margin-top: 0 !important; }
   main > :last-child { margin-bottom: 0 !important; }
 }
+
 ::-webkit-scrollbar { display: none; }

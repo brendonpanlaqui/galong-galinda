@@ -12,28 +12,28 @@ export default function Faq() {
     {
       id: 1,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'What is Galóng Galínda?',
       answer: 'Galóng Galínda is an educational and collegiate platform created by Physical Education and Sports Science students at City College of Angeles (CCA). It highlights purposeful kinesthetic movement, student sports events, physical fitness awareness, and practical athletic event coordination.'
     },
     {
       id: 2,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'What is the purpose of this website?',
       answer: 'The website serves as an official academic showcase and portfolio for the EVENT3 subject requirement. It functions to provide comprehensive event details, highlight student-coaching initiatives, share athletic knowledge, and simulate a real-world sports service secretariat.'
     },
     {
       id: 3,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Who can visit and explore this platform?',
       answer: 'Anyone interested in physical education, sports officiating, wellness initiatives, community tournaments, and collegiate sports event management is welcome to visit, learn, and review our resources.'
     },
     {
       id: 4,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'What content can I find across the site?',
       answer: (
         <ul className="mt-space-sm list-disc pl-5 space-y-1 leading-relaxed">
@@ -47,147 +47,147 @@ export default function Faq() {
     {
       id: 5,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'How do I participate in featured workshops or clinics?',
       answer: 'Institutions and individuals can submit a request using our Event Request Dispatcher form on this Contact page or reach out directly through our liaison office hotline (0956 387 1771) and campus email.'
     },
     {
       id: 6,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Are sessions open to everyone or limited to CCA students?',
       answer: 'While some sessions cater specifically to City College of Angeles classes, many community workshops, officiating clinics, and athletic festivals are open to partner schools, local barangays, and sports organizations in Central Luzon.'
     },
     {
       id: 7,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Is there a registration fee to attend academic seminars?',
       answer: 'Most educational seminars hosted under the academic curriculum are completely free of charge or require only minimal cost-recovery contributions for materials, certificates, and tactical drills equipment.'
     },
     {
       id: 8,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Where can I browse documentation and photos of previous events?',
       answer: 'You can visit our Gallery & Events page, which features photographic archives of intramural games, movement clinics, teacher training sessions, and community sports festivals.'
     },
     {
       id: 9,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Can students or participants submit photos to be featured?',
       answer: <>Yes! Participants and student photographers are encouraged to submit event snapshots via email to <strong className="text-on-surface">galonggalinda@gmail.com</strong> or by tagging our official Galóng Galínda Facebook page.</>
     },
     {
       id: 10,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'How can I contact the organizing committee?',
       answer: <>You can reach our Secretariat through our campus hotline at <strong className="text-on-surface">0956 387 1771</strong>, via email at <strong className="text-on-surface">galonggalinda@gmail.com</strong>, or in person at City College of Angeles, Arayat Blvd., Brgy. Pampang, Angeles City.</>
     },
     {
       id: 11,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'How often is this platform updated?',
       answer: 'The portal is updated continuously throughout the academic semester as new modules, workshop photos, tournament schedules, and curriculum projects are completed.'
     },
     {
       id: 12,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'What if event dates or seminar schedules change?',
       answer: 'In case of weather advisories, campus activity adjustments, or venue shifts, notifications will be posted prominently on the website banner and broadcasted across our official Facebook page.'
     },
     {
       id: 13,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'Can educators use the photos and guides for teaching purposes?',
       answer: 'Yes. Because this is an academic educational initiative, educators and coaches may utilize our exercise illustrations and guides for non-commercial instructional use, provided proper attribution is given to Galóng Galínda and CCA.'
     },
     {
       id: 14,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'How do I report inaccurate information or request photo removal?',
       answer: <>Please contact our site administrators directly at <strong className="text-on-surface">galonggalinda@gmail.com</strong> with the specific URL and details. Our student editorial committee will address inquiries promptly.</>
     },
     {
       id: 15,
       category: 'about',
-      badgeColor: 'bg-primary-fixed text-primary',
+      badgeColor: 'bg-primary-fixed text-on-primary-fixed',
       question: 'How can college students get involved in event leadership?',
       answer: 'Students enrolled in Physical Education and related curricula can coordinate with the student council and course professors to join committee assignments in logistics, technical officiating, and participant engagement.'
     },
     {
       id: 16,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'What products are featured under Galóng Galínda?',
       answer: <>We proudly showcase student wellness innovations designed for athletes and active learners: <strong className="text-secondary">Nutrifit</strong> (energy and nutrient-dense athlete snacks) and <strong className="text-primary">Armfit</strong> (supportive athletic compression arm sleeves).</>
     },
     {
       id: 17,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'What is Nutrifit and what are its key nutritional benefits?',
       answer: 'Nutrifit is a wholesome, energy-replenishing snack bar formulated with whole oats, natural honey, chia seeds, and roasted nuts. It delivers slow-releasing complex carbohydrates and protein for pre-game sustained energy and post-training recovery.'
     },
     {
       id: 18,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'What is Armfit and how does it support athletic performance?',
       answer: 'Armfit consists of graduated compression arm sleeves crafted from breathable, moisture-wicking elastane fabric. It stabilizes muscle vibrations, enhances blood circulation in repetitive overhead sports like volleyball and basketball, and offers UV protection during outdoor field matches.'
     },
     {
       id: 19,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'What are the prices for Nutrifit and Armfit items?',
       answer: 'Pricing is kept affordable for collegiate athletes and students: Nutrifit bars are offered at student-friendly rates (≈ ₱35 to ₱50 per pack), while Armfit compression sleeves are priced at ₱120 to ₱150 per pair, specifically priced to support student athletic accessibility.'
     },
     {
       id: 20,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'How do I purchase or order Nutrifit and Armfit?',
       answer: 'Orders can be placed during on-campus physical education pop-up booths, major sports fest days at CCA, or by sending a direct inquiry through our contact form and Facebook messenger team.'
     },
     {
       id: 21,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'Are these products available all year round?',
       answer: 'Nutrifit and Armfit are produced in limited batches synchronized with active academic terms, college sports meets, and seminar workshop cycles to guarantee fresh ingredients and optimal gear quality.'
     },
     {
       id: 22,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'Can non-CCA residents place orders online?',
       answer: 'Yes, residents in Angeles City and nearby Pampanga municipalities can place pre-orders online for on-campus pickup at CCA or local scheduled courier dispatch during academic operating weeks.'
     },
     {
       id: 23,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'Are there allergy warnings and dietary considerations for Nutrifit?',
       answer: <><span className="font-semibold text-primary">Allergen Notice:</span> Nutrifit contains peanuts, tree nuts, and whole oats. Individuals with severe nut allergies or specific dietary restrictions should review ingredient specifications before consumption.</>
     },
     {
       id: 24,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'Can defective or wrong size Armfit sleeves be exchanged?',
       answer: 'Unused, unworn Armfit sleeves with tags intact may be exchanged for a different size within 3 school days of pickup at the CCA physical education department hub.'
     },
     {
       id: 25,
       category: 'products',
-      badgeColor: 'bg-secondary-fixed text-secondary',
+      badgeColor: 'bg-secondary-fixed text-on-secondary-fixed',
       question: 'Where can I see complete specifications and size charts for Armfit?',
       answer: 'Detailed bicep-to-wrist size charts (S, M, L, XL), compression ratios, and fabric care guidelines are detailed in the Services & Workshops section and at our secretariat counter.'
     },

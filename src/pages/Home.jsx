@@ -22,7 +22,6 @@ export default function Home() {
                   </h1>
                   <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl pt-space-xs">
                     <span className="font-semibold text-primary">
-                      <span style={{ color: 'rgb(92, 64, 61)', fontWeight: 400, letterSpacing: '-0.18px' }}>Signifies the&nbsp;</span>
                       “GALING, Karunungan, Pakikiisa at Pakikisama”
                     </span> — As an event organization, we showcase the galing of every Filipino who demonstrates dicipline and honor in various events.
                   </p>

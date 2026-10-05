@@ -21,17 +21,17 @@ export default function About() {
       members: [
         { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "/gallery/team/pic%20(5).jpg" },
         { role: "Infrastructure", name: "Arvi John S. Solano", img: "/gallery/team/pic%20(4).jpg" },
-        { role: "Security", name: "Aaron C. Cortez", img: "/gallery/team/pic%20(8).jpg" },
-        { role: "Security", name: "Mikel Dean P. Lobo", img: "/gallery/team/pic%20(9).jpg" },
+        { role: "Security", name: "Aaron C. Cortez", img: "/gallery/team/pic%20(12).jpg" },
+        { role: "Security", name: "Mikel Dean P. Lobo", img: "/gallery/team/pic%20(13).jpg" },
       ]
     },
     {
       category: "Information & Logistics",
       members: [
         { role: "Information", name: "Christine Joy S. Valdevieso", img: "/gallery/team/pic%20(10).jpg" },
-        { role: "Information", name: "Niña Reachelle M. Nunag", img: "/gallery/team/pic%20(11).jpg" },
-        { role: "Logistics", name: "Jonaira M. Bonsa", img: "/gallery/team/pic%20(12).jpg" },
-        { role: "Logistics", name: "Andrew G. Magpantay", img: "/gallery/team/pic%20(13).jpg" }
+        { role: "Information", name: "Niña Reachelle M. Nunag", img: "/gallery/team/pic%20(9).jpg" },
+        { role: "Logistics", name: "Jonaira M. Bonsa", img: "/gallery/team/pic%20(8).jpg" },
+        { role: "Logistics", name: "Andrew G. Magpantay", img: "/gallery/team/pic%20(11).jpg" }
       ]
     }
   ];
@@ -40,8 +40,7 @@ export default function About() {
     <main>
       <div className="flex flex-col w-full">
         
-        {/* SECTION 1: HERO */}
-        <section className="relative w-full overflow-hidden bg-surface-container-lowest py-space-xl border-b border-surface-container-high/60">
+         <section className="relative w-full overflow-hidden bg-surface-container-lowest py-space-xl border-b border-surface-container-high/60">
           {/* Atmospheric Dual-Energy Glows (Consistent with Home) */}
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
           <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
@@ -49,27 +48,30 @@ export default function About() {
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
               
-              {/* Left Column: Text Content */}
+              
+              {/* Left Column: Text Content & Goals */}
               <div className="lg:col-span-8 flex flex-col gap-space-sm">
                 <div className="flex flex-wrap items-center gap-space-xs"></div>
-                <h1 className="font-display-hero text-display-hero-mobile lg:text-display-hero font-bold text-on-surface tracking-tight leading-tight">
-                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Galóng Galínda</span>
+                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] font-bold text-on-surface tracking-tight">
+                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm bg-[length:200%_200%]">Galóng Galínda</span>
                 </h1>
+                
                 <div className="flex flex-col gap-space-sm text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
                   <p className="font-normal text-on-surface">
                     Our organization focuses on the <b>Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
                   </p>
+
                 </div>
               </div>
               
               {/* Right Column: Original Card with Subtle Float */}
-              <div className="lg:col-span-4 flex flex-col items-center">
-                <div className="relative w-full max-w-sm aspect-square rounded-2xl bg-surface-container-lowest/80 backdrop-blur-sm p-space-lg shadow-[0_20px_50px_-10px_rgba(178,1,18,0.15)] flex flex-col items-center justify-center border border-surface-container-highest text-center animate-float-slow">
+              <div className="lg:col-span-4 flex flex-col items-center lg:mt-0 mt-8">
+                <div className="relative w-full max-w-sm aspect-square rounded-2xl bg-surface-container-lowest/80 backdrop-blur-sm p-space-lg shadow-[0_20px_50px_-10px_rgba(178,1,18,0.15)] dark:shadow-[0_0_40px_rgba(255,180,171,0.1)] flex flex-col items-center justify-center border border-surface-container-highest text-center animate-float-slow">
                   <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden p-2 flex items-center justify-center">
                     <img alt="Galóng Galínda Crest Emblem" className="w-full h-full object-contain transform hover:scale-105 transition-transform duration-500" src="/gallery/sticker%20(2).webp" />
                   </div>
                   <div className="mt-space-md">
-                    <span className="font-label-badge text-label-badge tracking-widest text-primary uppercase block">Official Motto</span>
+                    <span className="font-label-badge text-label-badge tracking-widest text-primary uppercase block font-bold">Official Motto</span>
                     <p className="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight mt-0.5">
                       “Patinikang Gâlo, Ipákit Ing Galíng Da”
                     </p>
@@ -79,6 +81,7 @@ export default function About() {
                   </div>
                 </div>
               </div>
+              
             </div>
           </div>
         </section>
@@ -89,11 +92,27 @@ export default function About() {
             
             <div className="flex flex-col gap-space-sm max-w-3xl mb-space-md">
               <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Goals</h2>
-              <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                Galóng Galínda aims to design and implement meaningful seminars, training programs, workshops, and events for the Physical Education community that promote purposeful movement and learning.
-              </p>
+
+              {/* Integrated "Our Goals" List */}
+                  <div className="mt-4 flex flex-col gap-4">
+                    <ul className="flex flex-col gap-3">
+                      {[
+                        "Enhance and develop the skills of every student that promote excellence in Physical Education.",
+                        "Show the talents and performance of each communities through sports, games and dances.",
+                        "Provide opportunities for professional development through seminars, workshops and hands-on demonstrations.",
+                        "To promote teamwork, leadership, and sportsmanship among participants through collaborative and competitive activities.",
+                        "To foster a culture of lifelong fitness and physical activity by emphasizing the importance of health, wellness, and active living."
+                      ].map((objective, index) => (
+                        <li key={index} className="flex items-start gap-3 text-base text-on-surface-variant">
+                          <span className="material-symbols-outlined text-[20px] text-primary mt-0.5 shrink-0">check_circle</span>
+                          <span>{objective}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+              
               <p className="font-body-md text-body-md text-on-surface-variant">
-                We aim to help participants develop their four core pillars:
+                <br></br>We aim to help participants develop their four core pillars:
               </p>
             </div>
             
@@ -173,7 +192,7 @@ export default function About() {
                 </div>
                 <div className="grid grid-cols-2 gap-space-sm">
                   <div className="relative h-36 rounded-xl overflow-hidden shadow-sm group">
-                    <img alt="PE mass field routine demonstration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/pe%20(8).jpg"  />
+                    <img alt="PE mass field routine demonstration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/offawards.jpg"  />
                   </div>
                   <div className="relative h-36 rounded-xl overflow-hidden shadow-sm group">
                     <img alt="Sports officiating covered court assembly" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/so%20(4).jpg"  />
@@ -187,6 +206,7 @@ export default function About() {
             </div>
           </div>
         </section>
+        
 
         {/* SECTION 4: OUR TEAM (REDESIGNED FOR ROLES & MOBILE 2-COLUMN) */}
         <section className="w-full py-space-xl bg-background">
@@ -194,7 +214,6 @@ export default function About() {
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-2">
               <div className="flex flex-col gap-space-xs max-w-3xl">
-                <span className="font-label-badge text-label-badge text-primary uppercase tracking-widest">BPEd-401 Group 1</span>
                 <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Team</h2>
                 <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
                   The minds and hands behind Galóng Galínda. Each member contributes different skills and responsibilities in planning, coordination, documentation, communication, program implementation, and event management.

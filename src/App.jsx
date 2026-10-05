@@ -12,7 +12,6 @@ import Refund from './pages/Refund';
 import Cookies from './pages/Cookies';
 import ScrollToTop from './components/ScrollToTop';
 
-// Simple placeholder components for missing pages to prevent routing errors
 const Placeholder = ({ title }) => (
   <div className="flex-1 flex items-center justify-center p-20">
     <h1 className="text-4xl font-bold text-primary">{title} Page Coming Soon</h1>

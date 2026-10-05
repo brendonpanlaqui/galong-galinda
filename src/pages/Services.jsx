@@ -79,7 +79,7 @@ export default function Services() {
               </div>
               <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
                 <div className="relative rounded-2xl overflow-hidden shadow-md sm:col-span-2 h-64 bg-surface-container">
-                  <img alt="Galóng Galínda collegiate sports arbiters" className="w-full h-full object-cover" src="/gallery/so%20(7).jpg" />
+                  <img alt="Galóng Galínda collegiate sports arbiters" className="w-full h-full object-cover" src="/gallery/officiawards.jpg" />
                 </div>
                 <div className="relative rounded-xl overflow-hidden shadow-sm h-40 bg-surface-container">
                   <img alt="Student delegates participating in referee training" className="w-full h-full object-cover" src="/gallery/so%20(3).jpg"  />

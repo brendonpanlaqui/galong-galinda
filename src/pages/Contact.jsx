@@ -37,7 +37,7 @@ export default function Contact() {
                     <span className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center material-symbols-outlined shrink-0">location_on</span>
                     <div>
                       <span className="font-label-badge text-[10px] text-on-surface-variant uppercase block mb-0.5">Campus Office</span>
-                      <p className="font-body text-sm font-semibold text-on-surface">City College of Angeles<br/>Arayat Blvd., Angeles City</p>
+                      <p className="font-body text-sm font-semibold text-on-surface">Arayat Blvd., Angeles City</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-container-lowest shadow-sm border border-surface-container-high/50">

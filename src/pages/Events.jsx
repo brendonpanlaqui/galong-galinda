@@ -169,7 +169,7 @@ export default function Events() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
               <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-                <img alt="Referee delegation stage" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(7).jpg"  />
+                <img alt="Referee delegation stage" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/officiating.jpg"  />
               </div>
               <div className="p-6 flex flex-col justify-between flex-1 gap-4">
                 <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">

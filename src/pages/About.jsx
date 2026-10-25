@@ -1,49 +1,93 @@
+import { useEffect, useState } from 'react';
+import ZoomableImage from '../components/ZoomableImage';
+import useConfetti from '../components/useConfetti';
+
 export default function About() {
+  const [activePillar, setActivePillar] = useState(null);
+  const { fireConfetti, confettiLayer } = useConfetti();
+  const togglePillar = (index, element) => {
+    if (activePillar !== index) fireConfetti(element);
+    setActivePillar(activePillar === index ? null : index);
+  };
+  const [activeMember, setActiveMember] = useState(null);
+
+  useEffect(() => {
+    if (activeMember === null) return undefined;
+    const handlePointerDown = (event) => {
+      if (!event.target.closest(`[data-team-member="${activeMember}"]`)) setActiveMember(null);
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setActiveMember(null);
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeMember]);
+
+  const toggleMember = (memberId) => {
+    setActiveMember((current) => (current === memberId ? null : memberId));
+  };
+  const showTeamSection = true;
+
   // Team data grouped by department for the new split-role design
   const teamGroups = [
     {
       category: "Event Management & Coordination",
       members: [
-        { role: "Event Manager", name: "Angela E. Ellegue", img: "/gallery/team/pic%20(2).jpg" },
-        { role: "Ass. Manager", name: "Edmon S. Licup", img: "/gallery/team/pic%20(1).jpg" },
-        { role: "Coordinator", name: "Jasper A. Dalusung", img: "/gallery/team/pic%20(7).jpg" },
+        { role: "Event Manager", name: "Angela E. Ellegue", img: "/gallery/team/ellegue.jpg" },
+        { role: "Assistant Manager", name: "Edmon S. Licup", img: "/gallery/team/licup.jpeg" },
+        { role: "Coordinator", name: "Jasper A. Dalusung", img: "/gallery/team/dalusung.jpg" },
       ]
     },
     {
       category: "Budget & Finance",
       members: [
-        { role: "Budget", name: "Alfreda Joy E. Magisa", img: "/gallery/team/pic%20(6).jpg" },
-        { role: "Budget", name: "Nicole A. Quinto", img: "/gallery/team/pic%20(3).jpg" },
+        { role: "Budget", name: "Alfreda Joy E. Magisa", img: "/gallery/team/magisa.jpg" },
+        { role: "Budget", name: "Nicole A. Quinto", img: "/gallery/team/quinto.jpg" },
       ]
     },
     {
       category: "Infrastructure & Security",
       members: [
-        { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "/gallery/team/pic%20(5).jpg" },
-        { role: "Infrastructure", name: "Arvi John S. Solano", img: "/gallery/team/pic%20(4).jpg" },
-        { role: "Security", name: "Aaron C. Cortez", img: "/gallery/team/pic%20(12).jpg" },
-        { role: "Security", name: "Mikel Dean P. Lobo", img: "/gallery/team/pic%20(13).jpg" },
+        { role: "Infrastructure", name: "Sean Alexis Quismondo", img: "/gallery/team/quismondo.jpg" },
+        { role: "Infrastructure", name: "Arvi John S. Solano", img: "/gallery/team/solano.jpg" },
+        { role: "Security", name: "Aaron C. Cortez", img: "/gallery/team/cortez.jpg" },
+        { role: "Security", name: "Mikel Dean P. Lobo", img: "/gallery/team/lobo.jpg" },
       ]
     },
     {
       category: "Information & Logistics",
       members: [
-        { role: "Information", name: "Christine Joy S. Valdevieso", img: "/gallery/team/pic%20(10).jpg" },
-        { role: "Information", name: "Niña Reachelle M. Nunag", img: "/gallery/team/pic%20(9).jpg" },
-        { role: "Logistics", name: "Jonaira M. Bonsa", img: "/gallery/team/pic%20(8).jpg" },
-        { role: "Logistics", name: "Andrew G. Magpantay", img: "/gallery/team/pic%20(11).jpg" }
+        { role: "Information", name: "Christine Joy S. Valdevieso", img: "/gallery/team/valdevieso.jpeg" },
+        { role: "Information", name: "Niña Reachelle M. Nunag", img: "/gallery/team/nunag.jpg" },
+        { role: "Logistics", name: "Jonaira M. Bonsa", img: "/gallery/team/bonsa.jpg" },
+        { role: "Logistics", name: "Andrew G. Magpantay", img: "/gallery/team/magpantay.jpg" }
       ]
     }
   ];
+
+  const teamResponsibilities = {
+    "Event Manager": "Leads event planning and delivery, oversees the program schedule, and coordinates the team to keep activities on track.",
+    "Assistant Manager": "Supports the event manager, follows up on team progress, and helps coordinate event operations.",
+    "Coordinator": "Connects the working teams, shares schedules and updates, and helps keep assigned tasks organized.",
+    "Budget": "Helps prepare and track event expenses, organize budget records, and coordinate purchasing needs.",
+    "Infrastructure": "Prepares the venue layout and equipment, and coordinates setup and facility requirements.",
+    "Security": "Helps maintain an orderly event space, supports access coordination, and raises safety concerns to the organizers.",
+    "Information": "Shares event announcements and important details, and helps respond to participant questions.",
+    "Logistics": "Coordinates event supplies, transport, setup, and distribution of materials where they are needed."
+  };
 
   return (
     <main>
       <div className="flex flex-col w-full">
         
-         <section className="relative w-full overflow-hidden bg-surface-container-lowest py-space-xl border-b border-surface-container-high/60">
-          {/* Atmospheric Dual-Energy Glows (Consistent with Home) */}
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
-          <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+         <section className="relative flex min-h-[26rem] w-full items-center overflow-hidden bg-surface-container-lowest py-space-xl border-b border-surface-container-high/60 lg:min-h-[32rem]">
+          <img src="/gallery/about-us-photo.jpeg" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-[center_68%]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#071b43]/90 via-[#073b78]/80 to-[#075985]/75" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#071b43]/45 via-transparent to-transparent" />
           
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
@@ -52,36 +96,17 @@ export default function About() {
               {/* Left Column: Text Content & Goals */}
               <div className="lg:col-span-8 flex flex-col gap-space-sm">
                 <div className="flex flex-wrap items-center gap-space-xs"></div>
-                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] font-bold text-on-surface tracking-tight">
-                  About <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm bg-[length:200%_200%]">Galóng Galínda</span>
+                <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] font-bold text-white tracking-tight">
+                  About <span className="text-sky-200">Galóng Galínda</span>
                 </h1>
                 
-                <div className="flex flex-col gap-space-sm text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
-                  <p className="font-normal text-on-surface">
+                <div className="flex flex-col gap-space-sm text-body-lg font-body-lg text-white/90 leading-relaxed">
+                  <p className="font-normal text-white">
                     Our organization focuses on the <b>Physical Education community, providing seminars, workshops, training programs, and events</b> designed to develop both individual talents and professional skills. We believe that Physical Education goes beyond physical activity—it is a platform for learning, leadership, self-expression, teamwork, and personal growth.
                   </p>
 
                 </div>
               </div>
-              
-              {/* Right Column: Original Card with Subtle Float */}
-              <div className="lg:col-span-4 flex flex-col items-center lg:mt-0 mt-8">
-                <div className="relative w-full max-w-sm aspect-square rounded-2xl bg-surface-container-lowest/80 backdrop-blur-sm p-space-lg shadow-[0_20px_50px_-10px_rgba(178,1,18,0.15)] dark:shadow-[0_0_40px_rgba(255,180,171,0.1)] flex flex-col items-center justify-center border border-surface-container-highest text-center animate-float-slow">
-                  <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden p-2 flex items-center justify-center">
-                    <img alt="Galóng Galínda Crest Emblem" className="w-full h-full object-contain transform hover:scale-105 transition-transform duration-500" src="/gallery/sticker%20(2).webp" />
-                  </div>
-                  <div className="mt-space-md">
-                    <span className="font-label-badge text-label-badge tracking-widest text-primary uppercase block font-bold">Official Motto</span>
-                    <p className="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight mt-0.5">
-                      “Patinikang Gâlo, Ipákit Ing Galíng Da”
-                    </p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant italic mt-1">
-                      Sharpen movement, display their greatness and innate talent.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
             </div>
           </div>
         </section>
@@ -90,76 +115,107 @@ export default function About() {
         <section className="w-full py-space-xl bg-background">
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin flex flex-col gap-space-lg">
             
-            <div className="flex flex-col gap-space-sm max-w-3xl mb-space-md">
-              <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Goals</h2>
+            <div className="grid grid-cols-1 items-center gap-space-xl lg:grid-cols-12">
+              <div className="lg:col-span-7">
+                <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Goals</h2>
+                <ul className="mt-4 flex flex-col gap-3">
+                  {[
+                    "Enhance and develop the skills of every student that promote excellence in Physical Education.",
+                    "Show the talents and performance of each communities through sports, games and dances.",
+                    "Provide opportunities for professional development through seminars, workshops and hands-on demonstrations.",
+                    "To promote teamwork, leadership, and sportsmanship among participants through collaborative and competitive activities.",
+                    "To foster a culture of lifelong fitness and physical activity by emphasizing the importance of health, wellness, and active living."
+                  ].map((objective, index) => (
+                    <li key={index} className="flex items-start gap-3 text-base text-on-surface-variant">
+                      <span className="material-symbols-outlined text-[20px] text-primary mt-0.5 shrink-0">check_circle</span>
+                      <span>{objective}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex flex-col items-center text-center animate-float-slow lg:col-span-5">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full p-2 flex items-center justify-center">
+                  <img
+                    alt="Galóng Galínda Crest Emblem"
+                    className="h-full w-full rounded-full object-contain transition-transform duration-500 hover:scale-105"
+                    src="/gallery/galong-galinda-logo-clean.png"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-3 max-w-sm">
+                  <span className="font-label-badge text-label-badge tracking-[0.2em] text-primary uppercase block font-bold">Official Motto</span>
+                  <p className="mt-1 font-headline-sm text-headline-sm font-extrabold leading-snug tracking-tight text-on-surface">
+                    “Patinikang Gâlo, Ipákit Ing Galíng Da”
+                  </p>
+                  <p className="mt-2 font-body-sm text-body-sm font-medium italic leading-relaxed text-on-surface-variant">
+                    Sharpen movement, display their greatness and innate talent.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-              {/* Integrated "Our Goals" List */}
-                  <div className="mt-4 flex flex-col gap-4">
-                    <ul className="flex flex-col gap-3">
-                      {[
-                        "Enhance and develop the skills of every student that promote excellence in Physical Education.",
-                        "Show the talents and performance of each communities through sports, games and dances.",
-                        "Provide opportunities for professional development through seminars, workshops and hands-on demonstrations.",
-                        "To promote teamwork, leadership, and sportsmanship among participants through collaborative and competitive activities.",
-                        "To foster a culture of lifelong fitness and physical activity by emphasizing the importance of health, wellness, and active living."
-                      ].map((objective, index) => (
-                        <li key={index} className="flex items-start gap-3 text-base text-on-surface-variant">
-                          <span className="material-symbols-outlined text-[20px] text-primary mt-0.5 shrink-0">check_circle</span>
-                          <span>{objective}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-              
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                <br></br>We aim to help participants develop their four core pillars:
-              </p>
+            <div className="flex flex-col gap-space-sm max-w-3xl mb-space-md">
+              <div className="mt-8 flex flex-col gap-2 border-l-4 border-primary pl-4">
+                <span className="font-label-badge text-label-badge font-bold uppercase tracking-[0.2em] text-primary">The foundation of our organization</span>
+                <h3 className="font-headline-lg text-3xl font-extrabold uppercase tracking-[0.12em] text-on-surface sm:text-4xl">Core Pillars</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant">
+                  Explore the four values that guide every Galóng Galínda activity.
+                </p>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
-              <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-primary/20 shadow-sm flex flex-col gap-space-xs hover:border-primary hover:shadow-md transition-all">
+            <div className="grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+              <button type="button" aria-expanded={activePillar === 0} onClick={(event) => togglePillar(0, event.currentTarget)} className={`flex min-h-[14rem] w-full self-start flex-col gap-space-xs rounded-xl border bg-surface-container-lowest p-space-lg text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${activePillar === 0 ? 'border-primary ring-1 ring-primary/20' : 'border-primary/20'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center">
                     <span className="material-symbols-outlined text-[22px]">workspace_premium</span>
                   </div>
                   <span className="font-label-badge text-label-badge uppercase tracking-wider text-primary font-bold">01</span>
                 </div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mt-1">Galing</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through the discovery and enhancement of their talents and skills</p>
-              </div>
+                <h3 className="mt-1 min-h-7 font-headline-sm text-headline-sm font-bold text-on-surface">Galing</h3>
+                <p className="min-h-[4.5rem] font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through the discovery and enhancement of their talents and skills</p>
+                {activePillar === 0 && <p className="mt-2 border-t border-surface-container-high pt-3 text-sm leading-relaxed text-on-surface-variant">Galing is the confidence to practice, strengthen, and share each person’s abilities through meaningful activities and opportunities to perform.</p>}
+                <span className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-primary">{activePillar === 0 ? 'Show less' : 'Explore pillar'}<span className="material-symbols-outlined text-base">{activePillar === 0 ? 'expand_less' : 'expand_more'}</span></span>
+              </button>
               
-              <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-secondary/20 shadow-sm flex flex-col gap-space-xs hover:border-secondary hover:shadow-md transition-all">
+              <button type="button" aria-expanded={activePillar === 1} onClick={(event) => togglePillar(1, event.currentTarget)} className={`flex min-h-[14rem] w-full self-start flex-col gap-space-xs rounded-xl border bg-surface-container-lowest p-space-lg text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary ${activePillar === 1 ? 'border-secondary ring-1 ring-secondary/20' : 'border-secondary/20'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="w-10 h-10 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center">
                     <span className="material-symbols-outlined text-[22px]">psychology</span>
                   </div>
                   <span className="font-label-badge text-label-badge uppercase tracking-wider text-secondary font-bold">02</span>
                 </div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mt-1">Karunungan</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through education, training, and practical experiences</p>
-              </div>
+                <h3 className="mt-1 min-h-7 font-headline-sm text-headline-sm font-bold text-on-surface">Karunungan</h3>
+                <p className="min-h-[4.5rem] font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through education, training, and practical experiences</p>
+                {activePillar === 1 && <p className="mt-2 border-t border-surface-container-high pt-3 text-sm leading-relaxed text-on-surface-variant">Karunungan grows through learning, thoughtful practice, and applying new knowledge in seminars, workshops, and real event settings.</p>}
+                <span className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-secondary">{activePillar === 1 ? 'Show less' : 'Explore pillar'}<span className="material-symbols-outlined text-base">{activePillar === 1 ? 'expand_less' : 'expand_more'}</span></span>
+              </button>
               
-              <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-tertiary/20 shadow-sm flex flex-col gap-space-xs hover:border-tertiary hover:shadow-md transition-all">
+              <button type="button" aria-expanded={activePillar === 2} onClick={(event) => togglePillar(2, event.currentTarget)} className={`flex min-h-[14rem] w-full self-start flex-col gap-space-xs rounded-xl border bg-surface-container-lowest p-space-lg text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-tertiary ${activePillar === 2 ? 'border-tertiary ring-1 ring-tertiary/20' : 'border-tertiary/20'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="w-10 h-10 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center">
                     <span className="material-symbols-outlined text-[22px]">handshake</span>
                   </div>
                   <span className="font-label-badge text-label-badge uppercase tracking-wider text-tertiary font-bold">03</span>
                 </div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mt-1">Pakikiisa</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through teamwork and active participation</p>
-              </div>
+                <h3 className="mt-1 min-h-7 font-headline-sm text-headline-sm font-bold text-on-surface">Pakikiisa</h3>
+                <p className="min-h-[4.5rem] font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through teamwork and active participation</p>
+                {activePillar === 2 && <p className="mt-2 border-t border-surface-container-high pt-3 text-sm leading-relaxed text-on-surface-variant">Pakikiisa means taking part, contributing ideas, and working together toward shared goals in every program and activity.</p>}
+                <span className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-tertiary">{activePillar === 2 ? 'Show less' : 'Explore pillar'}<span className="material-symbols-outlined text-base">{activePillar === 2 ? 'expand_less' : 'expand_more'}</span></span>
+              </button>
               
-               <div className="p-space-lg rounded-xl bg-surface-container-lowest border border-tertiary/20 shadow-sm flex flex-col gap-space-xs hover:border-tertiary hover:shadow-md transition-all">
+               <button type="button" aria-expanded={activePillar === 3} onClick={(event) => togglePillar(3, event.currentTarget)} className={`flex min-h-[14rem] w-full self-start flex-col gap-space-xs rounded-xl border bg-surface-container-lowest p-space-lg text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${activePillar === 3 ? 'border-primary ring-1 ring-primary/20' : 'border-tertiary/20'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface flex items-center justify-center">
                     <span className="material-symbols-outlined text-[22px]">diversity_3</span>
                   </div>
                   <span className="font-label-badge text-label-badge uppercase tracking-wider text-on-surface-variant font-bold">04</span>
                 </div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mt-1">Pakikisama</h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through collaboration, respect, and camaraderie</p>
-              </div>
+                <h3 className="mt-1 min-h-7 font-headline-sm text-headline-sm font-bold text-on-surface">Pakikisama</h3>
+                <p className="min-h-[4.5rem] font-body-sm text-body-sm text-on-surface-variant leading-relaxed">through collaboration, respect, and camaraderie</p>
+                {activePillar === 3 && <p className="mt-2 border-t border-surface-container-high pt-3 text-sm leading-relaxed text-on-surface-variant">Pakikisama is building positive relationships by treating others with respect, supporting one another, and celebrating shared achievements.</p>}
+                <span className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-primary">{activePillar === 3 ? 'Show less' : 'Explore pillar'}<span className="material-symbols-outlined text-base">{activePillar === 3 ? 'expand_less' : 'expand_more'}</span></span>
+              </button>
             </div>
 
           </div>
@@ -187,19 +243,25 @@ export default function About() {
               </div>
               
               <div className="lg:col-span-5 flex flex-col gap-space-sm">
-                <div className="relative w-full h-56 rounded-2xl overflow-hidden shadow-md group">
-                  <img alt="City College of Angeles PE stage committee" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/so%20(7).jpg"  />
-                </div>
+                <ZoomableImage
+                  alt="City College of Angeles PE stage committee"
+                  wrapperClassName="w-full h-56 rounded-2xl shadow-md"
+                  className="w-full h-full object-cover"
+                  src="/gallery/so%20(7).jpg"
+                />
                 <div className="grid grid-cols-2 gap-space-sm">
-                  <div className="relative h-36 rounded-xl overflow-hidden shadow-sm group">
-                    <img alt="PE mass field routine demonstration" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/offawards.jpg"  />
-                  </div>
-                  <div className="relative h-36 rounded-xl overflow-hidden shadow-sm group">
-                    <img alt="Sports officiating covered court assembly" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="/gallery/so%20(4).jpg"  />
-                    <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/85 via-transparent to-transparent flex items-end p-2">
-                      <span className="text-inverse-on-surface text-[11px] font-label-badge uppercase tracking-wider font-bold"><br /></span>
-                    </div>
-                  </div>
+                  <ZoomableImage
+                    alt="Participants taking part in a PE Days group activity"
+                    wrapperClassName="h-36 rounded-xl shadow-sm"
+                    className="w-full h-full object-cover"
+                    src="/gallery/pe%20(2).jpg"
+                  />
+                  <ZoomableImage
+                    alt="Participants learning sports officiating skills"
+                    wrapperClassName="h-36 rounded-xl shadow-sm"
+                    className="w-full h-full object-cover"
+                    src="/gallery/officiating.jpg"
+                  />
                 </div>
               </div>
 
@@ -208,15 +270,61 @@ export default function About() {
         </section>
         
 
+        <section id="organizational-video" className="organization-video-section scroll-mt-32 relative isolate overflow-hidden py-16 sm:py-20 lg:py-24">
+          <div className="organization-video-orb organization-video-orb-red" aria-hidden="true" />
+          <div className="organization-video-orb organization-video-orb-blue" aria-hidden="true" />
+          <div className="organization-video-edge-glow organization-video-edge-glow-left hidden sm:block" aria-hidden="true" />
+          <div className="organization-video-edge-glow organization-video-edge-glow-right hidden sm:block" aria-hidden="true" />
+          <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-margin-mobile text-center lg:px-margin">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 font-label-badge text-label-badge font-bold uppercase tracking-[0.16em] text-white shadow-lg backdrop-blur">
+              <span className="material-symbols-outlined text-base text-[#ffb4ab]" aria-hidden="true">movie</span>
+              Our story, in motion
+            </span>
+            <h2 className="mt-6 max-w-3xl font-headline-lg text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Meet the team
+              <span className="mt-1 block bg-gradient-to-r from-[#ffb4ab] via-white to-[#b3c5ff] bg-clip-text text-transparent">
+                behind the movement.
+              </span>
+            </h2>
+            <p className="mt-4 max-w-2xl font-body-lg leading-relaxed text-white/80">
+              Get a glimpse of the people, teamwork, and passion that bring Galóng Galínda to life.
+            </p>
+            <div className="organization-video-frame mt-8 w-full max-w-4xl rounded-2xl p-1 sm:mt-10 sm:rounded-3xl sm:p-2">
+              <video
+                className="aspect-video w-full rounded-xl bg-black object-contain sm:rounded-2xl"
+                controls
+                playsInline
+                preload="metadata"
+                poster="/gallery/organizational-video-poster.png"
+                aria-label="Galóng Galínda organizational video"
+              >
+                <source src="/videos/galong-galinda-organization.mp4" type="video/mp4" />
+                <p className="p-6 text-center text-sm text-white">
+                  Your browser cannot play this video format.
+                  <a className="ml-1 underline" href="/videos/galong-galinda-organization.mp4" download>
+                    Download the organizational video
+                  </a>.
+                </p>
+              </video>
+            </div>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white/80">
+              <span className="material-symbols-outlined text-lg text-[#ffb4ab]" aria-hidden="true">play_circle</span>
+              A closer look at the Galóng Galínda community
+            </div>
+          </div>
+        </section>
+
         {/* SECTION 4: OUR TEAM (REDESIGNED FOR ROLES & MOBILE 2-COLUMN) */}
+        {showTeamSection && (
         <section className="w-full py-space-xl bg-background">
           <div className="max-w-7xl mx-auto px-margin-mobile lg:px-margin flex flex-col gap-space-lg">
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-2">
               <div className="flex flex-col gap-space-xs max-w-3xl">
-                <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Our Team</h2>
+                <span className="font-label-badge text-label-badge font-bold uppercase tracking-[0.2em] text-primary">The people behind every activity</span>
+                <h2 className="font-headline-lg text-headline-lg font-extrabold text-on-surface tracking-tight">Our Team</h2>
                 <p className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                  The minds and hands behind Galóng Galínda. Each member contributes different skills and responsibilities in planning, coordination, documentation, communication, program implementation, and event management.
+                  Meet the people behind Galóng Galínda. Select a team member to learn about their role and responsibilities.
                 </p>
               </div>
             </div>
@@ -226,34 +334,60 @@ export default function About() {
               {teamGroups.map((group, groupIdx) => (
                 <div key={groupIdx} className="flex flex-col gap-6">
                   {/* Department Title */}
-                  <h3 className="font-headline-md text-xl md:text-2xl font-bold text-on-surface border-b border-surface-container-high pb-3">
+                  <h3 className="inline-flex items-center gap-3 font-headline-md text-xl md:text-2xl font-bold text-on-surface border-b border-surface-container-high pb-3">
+                    <span className="h-7 w-1.5 rounded-full bg-primary" aria-hidden="true"></span>
                     {group.category}
                   </h3>
                   
                   {/* Members Grid (2 Columns on Mobile, 4-5 on Desktop) */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-8 lg:gap-x-6 lg:gap-y-10">
-                    {group.members.map((member, memberIdx) => (
-                      <div key={memberIdx} className="flex flex-col items-center group">
-                        
-                        {/* Portrait Image Container */}
-                        <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-surface-container-low mb-3 shadow-sm border border-surface-container-high/40">
-                          <img 
-                            src={member.img} 
-                            alt={member.name} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </div>
-                        
-                        {/* Text Styling (Matched to reference image) */}
-                        <h4 className="font-headline-sm text-[15px] sm:text-base font-bold text-on-surface text-center leading-snug">
-                          {member.name}
-                        </h4>
-                        <span className="font-body-sm text-[13px] text-on-surface-variant text-center mt-0.5">
-                          {member.role}
-                        </span>
+                  <div className="team-grid">
+                    {group.members.map((member, memberIdx) => {
+                      const memberId = `${groupIdx}-${memberIdx}`;
+                      const isExpanded = activeMember === memberId;
 
-                      </div>
-                    ))}
+                      return (
+                        <div key={memberId} data-team-member={memberId} className={`team-item ${isExpanded ? 'team-item-open' : ''}`}>
+                        <div className={`team-card group overflow-hidden rounded-2xl border border-[#071b43]/15 bg-gradient-to-b from-white via-[#eef2ff] to-[#d9e3ff] shadow-md shadow-[#071b43]/10 dark:border-white/10 dark:from-[#16213f] dark:via-[#121a33] dark:to-[#0d1427] dark:shadow-black/40 transition-all ${isExpanded ? 'rounded-r-none border-r-0' : 'hover:-translate-y-1 hover:shadow-lg'}`}>
+                          <ZoomableImage
+                            src={member.img}
+                            alt={member.name}
+                            wrapperClassName="aspect-[4/5] w-full bg-surface-container-low"
+                            className="h-full w-full object-cover"
+                          >
+                            <span className="absolute bottom-3 left-3 z-10 rounded-full bg-[#071b43]/85 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white backdrop-blur-sm">
+                              {member.role}
+                            </span>
+                          </ZoomableImage>
+                          <button
+                            type="button"
+                            aria-expanded={isExpanded}
+                            onClick={() => toggleMember(memberId)}
+                            className="flex w-full flex-col text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                          >
+                            <div className="flex min-h-[5.5rem] flex-col items-center p-4 text-center">
+                              <h4 className="flex min-h-12 w-full items-center justify-center font-headline-sm text-[15px] font-bold leading-snug text-on-surface sm:text-base">
+                                {member.name}
+                              </h4>
+                              <span className="mt-2 inline-flex min-h-5 w-full items-center justify-center gap-1 text-xs font-semibold text-primary">
+                                {isExpanded ? 'Hide responsibilities' : 'View responsibilities'}
+                                <span className="material-symbols-outlined text-base" aria-hidden="true">
+                                  {isExpanded ? 'chevron_left' : 'chevron_right'}
+                                </span>
+                              </span>
+                            </div>
+                          </button>
+                        </div>
+                        <div className="team-panel" aria-hidden={!isExpanded}>
+                          <aside className="team-panel-inner">
+                            <span className="team-panel-accent" aria-hidden="true" />
+                            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">{member.role}</p>
+                            <h5 className="font-headline-sm text-lg font-bold text-on-surface">{member.name}</h5>
+                            <p className="text-sm leading-relaxed text-on-surface-variant">{teamResponsibilities[member.role]}</p>
+                          </aside>
+                        </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -261,6 +395,7 @@ export default function About() {
 
           </div>
         </section>
+        )}
 
         {/* SECTION 5: CLOSING ANTHEM */}
         <section className="w-full py-space-xl bg-surface-container-low border-y border-surface-container-high/60">
@@ -279,6 +414,7 @@ export default function About() {
         </section>
 
       </div>
+      {confettiLayer}
     </main>
   );
 }

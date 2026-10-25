@@ -1,327 +1,975 @@
-import { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import Papa from "papaparse";
+import { trackNetworkActivity } from "../utils/networkActivity";
+import LikeButton from "../components/LikeButton";
+import PosterSparkleImage from "../components/PosterSparkleImage";
+import ZoomableImage from "../components/ZoomableImage";
+import PhotoMarquee from "../components/PhotoMarquee";
+import useConfetti from "../components/useConfetti";
+
+const normalizeEventStatus = (status = "") =>
+  status
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]/g, "");
+const formatEventCategory = (category = "") => {
+  const normalized = category
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]/g, "");
+  if (normalized === "pedays") return "PE Days";
+  if (normalized === "officiating") return "Sports Officiating";
+  if (normalized === "seminarworkshops") return "Seminars & Workshops";
+  return category
+    .replace(/[_-]/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+};
+
+const featuredUpcomingEvent = {
+  eventId: "ibm-days-manawari-2026",
+  eventTitle: "IBM Days 2026: MANAWARI",
+  status: "Special Event",
+  eventDate: "October 28–30, 2026",
+  eventTime:
+    "8:00 A.M. – 5:00 P.M. (Suggested schedule; subject to confirmation)",
+  venue: "City College of Angeles",
+  image: "/gallery/IBM-final.jpg",
+  description:
+    "Get ready for IBM Days 2026: MANAWARI, happening on October 28–30, 2026, at the City College of Angeles! This three-day celebration organized by the Institute of Business and Management brings students together for an exciting experience filled with engaging activities, talent showcases, entertainment, and opportunities to learn and connect. Featuring special performances from Cup of Joe, Adie, and The Band Summers, the event celebrates student creativity, unity, and school spirit. Join us as we make unforgettable memories, discover talents, strengthen friendships, and celebrate the vibrant community of IBM!",
+};
+
+const featuredOngoingEvent = {
+  eventId: "bped-web-fusion",
+  eventTitle:
+    "Battle of the Websites: CONTROL, CREATE, AND ACTIVATE - BPED Web Fusion",
+  status: "Ongoing Event",
+  eventDate: "October 26, 2026",
+  eventTime: "1:00 P.M. – 5:00 P.M.",
+  venue: "Bulwagang Angeleno",
+  image: "/gallery/bped-web-fusion-event4.jpeg",
+  description:
+    "Control, Create, and Activate! Teams go head-to-head in a creative battle of website design and digital innovation for BPED Web Fusion.",
+};
+
+const featuredGalleryEvents = [
+  {
+    eventId: "stedar-sepak-takraw-officiating",
+    eventTitle: "Sports Officiating ",
+    eventDesc:
+      "Taking part in sports activities that encourage teamwork, discipline, and sportsmanship while learning the importance of fair play and responsibility.",
+    // eventDate: "January 29–30, 2026",
+    // eventVenue: "Villa Dolores Subdivision, Sto. Domingo, Angeles City",
+    category: "Sports Officiating",
+    photos: [
+      {
+        imgSrc: "/gallery/sports-festival-teamwork.jpeg",
+        photoTitle: "Sepak Takraw Officiating",
+        photoDesc:
+          "Sports officials help ensure the Sepak Takraw game is conducted fairly and according to the rules.",
+      },
+      // {
+      //   imgSrc: "/gallery/so%20(5).jpg",
+      //   photoTitle: "Sport Officiating",
+      //   photoDesc:
+      //     "Participants practice sports officiating skills during a hands-on training session.",
+      // },
+      ...[1, 2, 3, 4].map((n) => ({
+        imgSrc: `/gallery/sports-officiating-${n}.jpg`,
+        photoTitle: "Sport Officiating",
+        photoDesc: "Sports officiating in action.",
+      })),
+    ],
+    videos: [],
+  },
+  {
+    eventId: "seminars-and-officiating",
+    eventTitle: "Seminar Workshops",
+    eventDesc:
+      "Practical learning experiences that build participants’ confidence and skills through technical training, demonstrations, and officiating practice.",
+    category: "Seminars & Workshops",
+    photos: [
+      // {
+      //   imgSrc: "/gallery/officiating.jpg",
+      //   photoTitle: "Referee Delegation",
+      //   photoDesc:
+      //     "Participants develop officiating skills through technical training and demonstrations.",
+      // },
+      {
+        imgSrc: "/gallery/so%20(6).jpg",
+        photoTitle: "Seminar-Workshops",
+        photoDesc:
+          "Facilitators share interactive learning activities and officiating demonstrations.",
+      },
+    ],
+    videos: [],
+  },
+];
+
+const MARQUEE_CATEGORIES = [
+  "PE Days",
+  "Sports Officiating",
+  "Seminars & Workshops",
+];
+
+const seminarTarpaulinPhotos = [
+  { imgSrc: "/gallery/art-of-the-call-tarpaulin.jpg" },
+];
+const seminarExtraPhotos = Array.from({ length: 18 }, (_, index) => ({
+  imgSrc: `/gallery/seminar-workshop-${index + 1}.jpg`,
+}));
+
+const photoFullDescriptions = {
+  "Sepak Takraw Officiating":
+    "Sports officials help ensure the Sepak Takraw game is conducted fairly and according to the rules. They monitor serves, rallies, and scoring, make quick and impartial decisions, and keep the match safe and orderly while modeling sportsmanship, teamwork, and respect for every player on the court.",
+  "Sport Officiating":
+    "Participants practice sports officiating skills during a hands-on training session. They learn proper positioning, hand signals, rule interpretation, and communication with players and fellow officials, building the confidence and discipline needed to manage real game situations fairly.",
+  "Referee Delegation":
+    "Participants develop officiating skills through technical training and demonstrations. The delegation of referees learns game mechanics, teamwork among officials, and proper conduct, preparing them to handle competitions with fairness, accuracy, and professionalism.",
+  "Seminar-Workshops":
+    "Facilitators share interactive learning activities and officiating demonstrations. Participants take part in guided discussions, practical drills, and feedback sessions that strengthen their understanding of the rules and their ability to apply them in actual games.",
+  "Volleyball Seminar Workshops":
+    "Participants and organizers gather during a volleyball officiating seminar workshop. The session covers rules, signals, court positioning, and scoring procedures, with hands-on practice so attendees can officiate volleyball matches with confidence.",
+  "PE Days 2026":
+    "Moments captured during PE Days 2026! A glimpse of the torch lighting, the delegations' march, and the energy of students celebrating movement, teamwork, and school spirit.",
+};
+
+const PE_DAYS_PHOTO_TITLE = "PE Days 2026";
+const PE_DAYS_PHOTO_DESC = "Moments captured during PE Days 2026!";
+const peDaysExtraPhotos = [
+  { imgSrc: "/gallery/pe-days-2026-2.jpg" },
+  { imgSrc: "/gallery/pe-days-2026-1.jpg" },
+
+  { imgSrc: "/gallery/pe-days-2026-3.jpg" },
+  ...Array.from({ length: 11 }, (_, index) => ({
+    imgSrc: `/gallery/pe-days-2026-${index + 4}.jpg`,
+  })),
+];
 
 export default function Events() {
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [galleryEvents, setGalleryEvents] = useState([]);
+  const location = useLocation();
+  const [activeEventTab, setActiveEventTab] = useState(() => {
+    const requestedTab = new URLSearchParams(location.search).get("tab");
+    return ["upcoming", "ongoing", "previous"].includes(requestedTab)
+      ? requestedTab
+      : "upcoming";
+  });
+  const [activeGalleryCategory, setActiveGalleryCategory] = useState(
+    () => new URLSearchParams(location.search).get("category") || "all",
+  );
+  const [flippedPhotoCardId, setFlippedPhotoCardId] = useState(null);
+  const { fireConfetti, confettiLayer } = useConfetti();
+  const [galleryEvents, setGalleryEvents] = useState(featuredGalleryEvents);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isUpcomingLoading, setIsUpcomingLoading] = useState(true);
+  const [isGalleryLoading, setIsGalleryLoading] = useState(true);
+
+  const togglePhotoCard = (cardId, cardElement) => {
+    if (flippedPhotoCardId !== cardId) fireConfetti(cardElement);
+    setFlippedPhotoCardId((currentId) =>
+      currentId === cardId ? null : cardId,
+    );
+  };
 
   useEffect(() => {
     // 1. PASTE YOUR PUBLISHED "UPCOMING" TAB CSV LINK HERE:
-    const upcomingCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=1373412542&single=true&output=csv";
+    const upcomingCsvUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=1373412542&single=true&output=csv";
 
     // 2. PASTE YOUR PUBLISHED "EVENTS" TAB CSV LINK HERE:
-    const eventsCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=0&single=true&output=csv";
+    const eventsCsvUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSowJhCiO6-TjuZRK0Iho_eaLfsZBey_2lrFYMCuf88hc91ogE6_K7jv9QurxlVkHonQAu2dT9bUsEQ/pub?gid=0&single=true&output=csv";
 
     // Fetch Upcoming Events
+    const finishUpcomingRequest = trackNetworkActivity();
     Papa.parse(upcomingCsvUrl, {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        const validUpcoming = results.data.filter(item => item.eventTitle && item.eventDate);
+        finishUpcomingRequest();
+        const validUpcoming = results.data.filter(
+          (item) => item.eventTitle && item.eventDate,
+        );
         setUpcomingEvents(validUpcoming);
+        setIsUpcomingLoading(false);
       },
-      error: (err) => console.error("Error fetching upcoming events:", err)
+      error: (err) => {
+        finishUpcomingRequest();
+        console.error("Error fetching upcoming events:", err);
+        setIsUpcomingLoading(false);
+      },
     });
 
     // Fetch Past Gallery Events
+    const finishGalleryRequest = trackNetworkActivity();
     Papa.parse(eventsCsvUrl, {
       download: true,
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        const validData = results.data.filter(item => item.eventId && item.imgSrc);
+        finishGalleryRequest();
+        const validData = results.data.filter((item) => item.eventId);
+        const seminarWorkshopPhotos = [];
         const groupedEventsMap = validData.reduce((acc, row) => {
           if (!acc[row.eventId]) {
             acc[row.eventId] = {
               eventId: row.eventId,
               eventTitle: row.eventTitle,
-              eventDesc: row.eventDesc,
-              category: row.category,
-              photos: []
+              eventDesc:
+                row.eventDesc || row.eventDescription || row.description,
+              eventDate: row.eventDate || row.date,
+              eventVenue: row.eventVenue || row.venue || row.location,
+              category: formatEventCategory(
+                row.eventCategory || row.category || "Other Events",
+              ),
+              photos: [],
+              videos: [],
             };
           }
-          acc[row.eventId].photos.push(row);
+          if (row.imgSrc) {
+            const photo = { ...row };
+            if (photo.photoTitle === "Torch Relay Kickoff") {
+              photo.photoTitle = "Volleyball Seminar Workshops";
+              photo.photoDesc =
+                "Participants and organizers gather during a volleyball officiating seminar workshop.";
+              seminarWorkshopPhotos.push(photo);
+            } else if (photo.photoTitle === "Mass Aerobics") {
+              acc[row.eventId].photos.push(photo);
+            } else {
+              acc[row.eventId].photos.push(photo);
+            }
+          }
+          if (row.videoSrc || row.videoEmbed || row.videoUrl || row.videoLink) {
+            acc[row.eventId].videos.push({
+              ...row,
+              mediaSrc: row.videoSrc,
+              videoLink: row.videoUrl || row.videoLink,
+            });
+          }
           return acc;
         }, {});
 
-        setGalleryEvents(Object.values(groupedEventsMap));
-        setIsLoading(false);
+        const sheetEvents = Object.values(groupedEventsMap)
+          .map((event) =>
+            event.category === "PE Days"
+              ? {
+                  ...event,
+                  eventTitle: "2026 PE Days Celebration",
+                  eventDesc:
+                    "The annual two-day athletic celebration promoting movement, sportsmanship, and camaraderie.",
+                  photos: [
+                    ...event.photos.filter(
+                      (photo) => photo.photoTitle === "Mass Aerobics",
+                    ),
+                    ...peDaysExtraPhotos,
+                  ].map((photo) => ({
+                    ...photo,
+                    photoTitle: PE_DAYS_PHOTO_TITLE,
+                    photoDesc: PE_DAYS_PHOTO_DESC,
+                  })),
+                }
+              : event,
+          )
+          .filter(
+            (event) => event.photos.length > 0 || event.videos.length > 0,
+          );
+        const featuredEventIds = new Set(
+          featuredGalleryEvents.map((event) => event.eventId),
+        );
+        setGalleryEvents([
+          ...featuredGalleryEvents.map((event) =>
+            event.eventId === "seminars-and-officiating"
+              ? {
+                  ...event,
+                  photos: [
+                    ...seminarTarpaulinPhotos,
+                    ...event.photos,
+                    ...seminarWorkshopPhotos,
+                    ...seminarExtraPhotos,
+                  ],
+                }
+              : event,
+          ),
+          ...sheetEvents.filter(
+            (event) => !featuredEventIds.has(event.eventId),
+          ),
+        ]);
+        setIsGalleryLoading(false);
       },
       error: (error) => {
+        finishGalleryRequest();
         console.error("Error fetching events spreadsheet data:", error);
-        setIsLoading(false);
-      }
+        setIsGalleryLoading(false);
+      },
     });
   }, []);
 
-  const filteredEvents = activeFilter === 'all' 
-    ? galleryEvents 
-    : galleryEvents.filter(event => event.category === activeFilter);
+  const ongoingEvents = [
+    featuredOngoingEvent,
+    ...upcomingEvents.filter((item) => {
+      const status = normalizeEventStatus(item.status);
+      return (
+        (status.includes("ongoing") || status.includes("inprogress")) &&
+        item.eventTitle !== featuredOngoingEvent.eventTitle
+      );
+    }),
+  ];
+  const scheduledEvents = upcomingEvents.filter((item) => {
+    const status = normalizeEventStatus(item.status);
+    return (
+      !status.includes("ongoing") &&
+      !status.includes("inprogress") &&
+      !status.includes("previous") &&
+      !status.includes("past") &&
+      !status.includes("completed")
+    );
+  });
+  const visibleScheduledEvents = [
+    featuredUpcomingEvent,
+    ...scheduledEvents.filter(
+      (item) =>
+        item.eventTitle !== "Inter-Collegiate Officiating Seminar & Workshop",
+    ),
+  ];
+  const eventTabs = [
+    { id: "upcoming", label: "Upcoming Events", icon: "event_upcoming" },
+    { id: "ongoing", label: "Ongoing Events", icon: "event" },
+    { id: "previous", label: "Previous Events", icon: "history" },
+  ];
+  const visibleSchedule =
+    activeEventTab === "ongoing" ? ongoingEvents : scheduledEvents;
+  const galleryCategories = [
+    "all",
+    ...new Set(galleryEvents.map((event) => event.category)),
+  ];
+  const visibleGalleryEvents =
+    activeGalleryCategory === "all"
+      ? galleryEvents
+      : galleryEvents.filter(
+          (event) => event.category === activeGalleryCategory,
+        );
 
   return (
     <main>
-      
       <section className="relative w-full overflow-hidden bg-surface-container-lowest py-16 lg:py-24 border-b border-surface-container-high/60">
         {/* Atmospheric Dual-Energy Glows */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none animate-pulse"></div>
         <div className="absolute top-20 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 lg:px-8 relative z-10 flex flex-col gap-6">
           <div className="flex flex-col gap-3 max-w-4xl">
             <h1 className="font-display-hero text-4xl lg:text-[64px] lg:leading-[72px] text-on-surface font-bold tracking-tight">
-              Gallery &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">Events</span>
+              Gallery &amp;{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-primary animate-gradient-x drop-shadow-sm">
+                Events
+              </span>
             </h1>
             <p className="font-body-lg text-lg text-on-surface-variant leading-relaxed mt-2">
-              Explore authentic photo documentation from <span className="text-primary font-semibold">Galóng Galínda’s</span> institutional activities, from PE Days and community events to educational seminars, workshops, and sports officiating clinics. Our gallery captures the learning, teamwork, energy, and memorable experiences shared by participants throughout every event.
+              Explore authentic photo documentation from{" "}
+              <span className="text-primary font-semibold">
+                Galóng Galínda’s
+              </span>{" "}
+              institutional activities, from PE Days and community events to
+              educational seminars, workshops, and sports officiating clinics.
+              Our gallery captures the learning, teamwork, energy, and memorable
+              experiences shared by participants throughout every event.
             </p>
           </div>
         </div>
       </section>
 
-      {/* SECTION: UPCOMING EVENTS & SCHEDULES (DYNAMIC FROM GOOGLE SHEETS) */}
-      <section className="w-full py-12 lg:py-16 bg-surface-container-low border-b border-surface-container-high/60" id="section-upcoming">
+      <section
+        className="event-teaser-section w-full py-10 lg:py-14"
+        aria-labelledby="event-teaser-title"
+      >
+        <div className="event-teaser-panel mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 rounded-3xl px-5 py-6 sm:px-8 lg:grid-cols-12 lg:px-10 lg:py-10">
+          <div className="teaser-copy lg:col-span-4">
+            <span className="teaser-badge inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
+              <span
+                className="material-symbols-outlined text-[16px]"
+                aria-hidden="true"
+              >
+                movie
+              </span>
+              Event Teaser
+            </span>
+            <h2
+              id="event-teaser-title"
+              className="mt-3 font-headline text-2xl font-bold lg:text-3xl"
+            >
+              IBM Event Teaser
+            </h2>
+            <p className="mt-3 text-base leading-relaxed lg:text-lg">
+              Get a preview of Galóng Galínda’s event highlights.
+            </p>
+          </div>
+          <div className="event-teaser-video lg:col-span-8">
+            <video
+              className="aspect-video w-full"
+              src="/gallery/ibm-teaser.mp4"
+              poster="/gallery/ibm-event-teaser-poster.png"
+              controls
+              preload="metadata"
+              playsInline
+              aria-label="IBM event teaser video"
+            >
+              Your browser does not support embedded videos.
+            </video>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: EVENT CALENDAR */}
+      <section
+        className="w-full py-12 lg:py-16 bg-surface-container-low border-b border-surface-container-high/60 scroll-mt-20"
+        id="section-upcoming"
+      >
         <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
-          
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div className="flex flex-col gap-2 max-w-3xl">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-label-badge text-[10px] uppercase tracking-wider font-bold self-start">
-                <span className="material-symbols-outlined text-[14px]">event</span>
-                Calendar
+                <span className="material-symbols-outlined text-[14px]">
+                  event
+                </span>
+                Events Calendar
               </div>
-              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Upcoming Events &amp; Schedules</h2>
+              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface">
+                {eventTabs.find((tab) => tab.id === activeEventTab)?.label}
+              </h2>
               <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                Join our upcoming seminars, tournaments, and community outreach programs. Secure your slots early!
+                Browse upcoming, ongoing, and previous Galóng Galínda
+                activities.
               </p>
             </div>
           </div>
 
-          {/* Upcoming Events Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.map((item, index) => (
-              <div key={index} className="flex flex-col bg-surface-container-lowest rounded-2xl p-6 border border-surface-container-high/60 shadow-sm justify-between gap-6 group hover:shadow-md transition-all">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-label-badge text-[10px] uppercase font-bold">
-                      {item.status || "Upcoming"}
-                    </span>
-                    <span className="font-label text-xs text-on-surface-variant flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px] text-primary">calendar_today</span>
-                      {item.eventDate}
-                    </span>
-                  </div>
-                  <h3 className="font-headline text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
-                    {item.eventTitle}
-                  </h3>
-                  <p className="font-body text-xs text-on-surface-variant leading-relaxed">
-                    {item.description || item.desc}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-3 pt-4 border-t border-surface-container-high/50">
-                  <div className="flex items-center justify-between text-xs font-label text-on-surface-variant">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">schedule</span> {item.eventTime}
-                    </span>
-                    <span className="flex items-center gap-1 font-semibold text-on-surface">
-                      <span className="material-symbols-outlined text-[14px] text-tertiary">location_on</span> {item.venue}
-                    </span>
-                  </div>
-                  {item.ctaLink && (
-                    <a 
-                      href={item.ctaLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-full py-2.5 rounded-lg bg-primary hover:bg-primary-container text-white font-label-md text-center transition-colors shadow-sm flex items-center justify-center gap-1.5"
-                    >
-                      <span>View Details</span>
-                      <span className="material-symbols-outlined text-[16px]">open_in_new</span>
-                    </a>
-                  )}
-                </div>
-              </div>
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label="Filter events by status"
+          >
+            {eventTabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                aria-pressed={activeEventTab === tab.id}
+                onClick={() => setActiveEventTab(tab.id)}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-label-md text-sm font-semibold transition-colors ${activeEventTab === tab.id ? "bg-primary text-on-primary" : "bg-surface-container-lowest text-on-surface-variant hover:text-primary"}`}
+              >
+                <span
+                  className="material-symbols-outlined text-[18px]"
+                  aria-hidden="true"
+                >
+                  {tab.icon}
+                </span>
+                {tab.label}
+              </button>
             ))}
-
-            {upcomingEvents.length === 0 && !isLoading && (
-              <div className="col-span-full py-12 text-center text-on-surface-variant font-body-sm bg-surface-container-lowest rounded-2xl border border-surface-container-high/60">
-                No upcoming events scheduled at the moment. Please check back soon!
-              </div>
-            )}
           </div>
 
-        </div>
-      </section>
-
-      {/* EVENT SHOWCASE 1: The Art of the Call (HARDCODED) */}
-      <section className="w-full bg-surface-container-low py-12 lg:py-16 border-b border-surface-container-high/60" id="section-art-of-the-call">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="flex flex-col gap-2 max-w-3xl">
-              <h2 className="font-headline text-2xl lg:text-3xl font-bold text-on-surface">Seminar Workshop and Officiating</h2>
-              <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                Providing participants with practical knowledge and hands-on learning through specialized seminars and workshops.
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-                <img alt="Referee delegation stage" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/officiating.jpg"  />
-              </div>
-              <div className="p-6 flex flex-col justify-between flex-1 gap-4">
-                <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                  Developing the skills and confidence of aspiring officials through technical training, demonstrations, and actual officiating experiences.
-                </p>
-              </div>
-            </div>
-            
-            <div className="lg:col-span-5 flex flex-col gap-6">
-              <div className="flex flex-col sm:flex-row lg:flex-row bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-                <div className="relative w-full sm:w-48 lg:w-48 h-52 shrink-0 overflow-hidden">
-                  <img alt="Photo booth frame" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(6).jpg"  />
+          {activeEventTab !== "previous" ? (
+            <div
+              key={activeEventTab}
+              className="tab-transition-enter grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            >
+              {isUpcomingLoading ? (
+                <div
+                  className="col-span-full rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant"
+                  role="status"
+                  aria-live="polite"
+                >
+                  Loading events...
                 </div>
-                <div className="p-4 flex flex-col justify-between flex-1">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Seminar-Workshops</h4>
-                    <p className="font-body text-xs text-on-surface-variant mt-1.5 leading-relaxed">
-                      Facilitators enjoying interactive photo props showcasing volleyball touch, net faults, yellow cards, and whistle calls.
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant mt-3">
-                    <span className="">Peer Fellowship</span>
-                    <span className="material-symbols-outlined text-[16px] text-secondary">photo_camera</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row lg:flex-row bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-                <div className="relative w-full sm:w-48 lg:w-48 h-52 shrink-0 overflow-hidden">
-                  <img alt="Lecture discussion session" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/so%20(5).jpg"  />
-                </div>
-                <div className="p-4 flex flex-col justify-between flex-1">
-                  <div>
-                    <h4 className="font-headline text-base font-bold text-on-surface">Sports Officiating</h4>
-                    <div className="font-body text-xs text-on-surface-variant mt-1.5 leading-relaxed">Providing participants with practical knowledge and hands-on learning through specialized seminars and workshops.</div>
-                  </div>
-                  <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant mt-3">
-                    <span className="">Court Discussion</span>
-                    <span className="material-symbols-outlined text-[16px] text-tertiary">record_voice_over</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* EVENT SHOWCASE 2: PE Days (HARDCODED) */}
-      <section className="w-full py-12 lg:py-16 bg-surface-container-lowest border-b border-surface-container-high/60" id="section-pe-days">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-surface-container-high/60 pb-8">
-            <div className="flex flex-col gap-2 max-w-3xl">
-              <h2 className="font-headline text-2xl lg:text-4xl font-bold text-on-surface tracking-tight">PE Days</h2>
-              <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                Celebrating movement, teamwork, creativity, and camaraderie through engaging physical activities and community experiences.
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div className="lg:col-span-7 flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative w-full h-80 sm:h-96 overflow-hidden">
-                <img alt="Mass aerobics" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(2).jpg" />
-              </div>
-              <div className="p-6 flex flex-col justify-between flex-1 gap-4">
-                <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                  Where learning meets movement and every moment becomes an experience. <br/><br/>
-                  Each event reflects our commitment to galing, karunungan, pakikiisa, at pakikisama, creating opportunities to learn, participate, and grow together.
-                </p>
-              </div>
-            </div>
-            
-            <div className="lg:col-span-5 flex flex-col bg-surface-container-low rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm group">
-              <div className="relative w-full h-64 sm:h-72 overflow-hidden">
-                <img alt="Cauldron" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="/gallery/pe%20(5).jpg" />
-                <span className="absolute top-3 right-3 bg-primary text-white font-label text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider shadow-sm">Ceremonial Flame</span>
-              </div>
-              <div className="p-6 flex flex-col justify-between flex-1 gap-4">
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-headline text-xl font-bold text-on-surface">The Blazing Phoenix Cauldron</h3>
-                  <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-                    Ignited by student torchbearers to herald the athletic tournaments, the ceremonial flame symbolizes the fiery determination and rise of every student-athlete within our community.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* NEW DYNAMIC EVENT GROUPS (FED FROM GOOGLE SHEETS) */}
-      <section className="w-full py-12 lg:py-16 bg-background border-t border-surface-container-high/60" id="section-dynamic-uploads">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col gap-8">
-
-          {isLoading ? (
-            <div className="w-full flex flex-col items-center justify-center py-16 gap-4">
-              <div className="w-10 h-10 border-4 border-surface-container-highest border-t-primary rounded-full animate-spin"></div>
-              <span className="font-label text-[11px] text-on-surface-variant uppercase tracking-wider font-bold">Syncing latest archives...</span>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-16">
-              {filteredEvents.length === 0 && (
-                <div className="w-full py-16 text-center flex flex-col items-center gap-3">
-                  <span className="material-symbols-outlined text-4xl text-surface-container-highest">photo_library</span>
-                  <div className="text-on-surface-variant font-body-sm">
-                    No archive events have been appended from the spreadsheet yet.
-                  </div>
-                </div>
-              )}
-
-              {filteredEvents.map((event) => (
-                <div key={event.eventId} className="flex flex-col gap-6 pt-10 mt-2 border-t border-surface-container-high/60 first:border-0 first:pt-0 first:mt-0">
-                  <div className="flex flex-col gap-2 max-w-3xl mb-2">
-                    <h2 className="font-headline text-2xl lg:text-4xl font-bold text-on-surface tracking-tight">
-                      {event.eventTitle}
-                    </h2>
-                    <p className="font-body text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                      {event.eventDesc}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {event.photos.map((photo, index) => (
-                      <div key={index} className="flex flex-col bg-surface-container-lowest rounded-2xl overflow-hidden border border-surface-container-high/60 shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md group">
-                        <div className="relative h-56 w-full overflow-hidden">
-                          <img alt={photo.photoTitle} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src={photo.imgSrc} />
-                          <span className="absolute top-3 right-3 bg-secondary text-white font-label text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider shadow-sm">
-                            {photo.badge}
-                          </span>
+              ) : (
+                <>
+                  {(activeEventTab === "upcoming"
+                    ? visibleScheduledEvents
+                    : visibleSchedule
+                  ).map((item, index) => (
+                    <article
+                      key={item.eventTitle || index}
+                      className={`flex flex-col overflow-hidden rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest shadow-sm transition-all hover:shadow-md ${item.image ? "md:col-span-2 lg:col-span-3 lg:grid lg:grid-cols-12" : ""} ${item.eventId === "bped-web-fusion" ? "bped-event-card" : ""} ${item.eventId === "ibm-days-manawari-2026" ? "ibm-event-card" : ""}`}
+                    >
+                      {item.image && (
+                        <div
+                          className={`flex items-center justify-center overflow-hidden ${item.eventId === "bped-web-fusion" ? "bped-event-poster md:col-span-2 lg:col-span-5" : item.eventId === "ibm-days-manawari-2026" ? "ibm-event-poster md:col-span-2 lg:col-span-5" : "h-96 bg-surface-container-low p-3 lg:col-span-5 lg:h-[32rem]"}`}
+                        >
+                          {item.eventId === "ibm-days-manawari-2026" ? (
+                            <ZoomableImage
+                              src={item.image}
+                              alt={`${item.eventTitle} event poster`}
+                              wrapperClassName="ember-glow-poster block h-[calc(100%-1.5rem)] w-auto rounded-md"
+                              className="!p-0 h-full w-auto max-w-full object-contain"
+                            />
+                          ) : item.eventId === "bped-web-fusion" ? (
+                            <ZoomableImage
+                              src={item.image}
+                              alt={`${item.eventTitle} event poster`}
+                              wrapperClassName="ember-glow-poster block h-full w-full"
+                              className="h-full w-full object-cover"
+                            >
+                              <span
+                                className="fire-drip-field"
+                                aria-hidden="true"
+                              >
+                                {[8, 19, 31, 44, 56, 68, 80, 91].map(
+                                  (left, i) => (
+                                    <span
+                                      key={left}
+                                      className="fire-drip"
+                                      style={{
+                                        left: `${left}%`,
+                                        animationDelay: `${(i * 430) % 2600}ms`,
+                                        animationDuration: `${2200 + (i % 3) * 400}ms`,
+                                      }}
+                                    />
+                                  ),
+                                )}
+                              </span>
+                            </ZoomableImage>
+                          ) : (
+                            <PosterSparkleImage
+                              src={item.image}
+                              alt={`${item.eventTitle} event poster`}
+                              loading={
+                                item.eventId === "bped-web-fusion" ||
+                                item.eventId === "ibm-days-manawari-2026"
+                                  ? "eager"
+                                  : "lazy"
+                              }
+                              decoding="async"
+                              fetchPriority={
+                                item.eventId === "bped-web-fusion" ||
+                                item.eventId === "ibm-days-manawari-2026"
+                                  ? "high"
+                                  : "auto"
+                              }
+                              className={`h-full w-full ${item.eventId === "bped-web-fusion" ? "object-cover" : "object-contain"}`}
+                            />
+                          )}
                         </div>
-                        <div className="p-5 flex flex-col flex-1 justify-between gap-3">
-                          <div className="flex flex-col gap-1.5">
-                            <h4 className="font-headline text-base font-bold text-on-surface">{photo.photoTitle}</h4>
-                            <p className="font-body text-xs text-on-surface-variant leading-relaxed">
-                              {photo.photoDesc}
-                            </p>
+                      )}
+                      <div
+                        className={`flex flex-1 flex-col gap-5 p-6 ${item.image ? "featured-event-panel lg:col-span-7 lg:justify-center lg:p-8" : ""} ${item.eventId === "bped-web-fusion" ? "bped-event-details" : ""} ${item.eventId === "ibm-days-manawari-2026" ? "ibm-event-details" : ""}`}
+                      >
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full px-3 py-1 font-label-badge text-[10px] font-bold uppercase ${item.eventId === "bped-web-fusion" ? "bped-event-badge" : item.eventId === "ibm-days-manawari-2026" ? "ibm-event-badge" : "bg-secondary/10 text-secondary"}`}
+                              >
+                                {item.status || "Upcoming"}
+                              </span>
+                              {item.eventId === "bped-web-fusion" && (
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-3 py-1 font-label-badge text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">
+                                  <span
+                                    className="relative flex h-2 w-2"
+                                    aria-hidden="true"
+                                  >
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                                  </span>
+                                  Happening Now
+                                </span>
+                              )}
+                            </span>
+                            <span className="flex items-center gap-1 font-label text-xs text-on-surface-variant">
+                              <span
+                                className="material-symbols-outlined text-[14px] text-primary"
+                                aria-hidden="true"
+                              >
+                                calendar_today
+                              </span>
+                              {item.eventDate}
+                            </span>
                           </div>
-                          <div className="pt-3 border-t border-surface-container-high/50 flex items-center justify-between font-label text-[11px] text-on-surface-variant">
-                            <span className="">{photo.location}</span>
-                            <span className="material-symbols-outlined text-[16px] text-primary">{photo.icon}</span>
+                          <h3 className="font-headline text-lg font-bold text-on-surface">
+                            {item.eventTitle}
+                          </h3>
+                          <p className="font-body text-sm leading-relaxed text-on-surface-variant">
+                            {item.description || item.desc}
+                          </p>
+                        </div>
+
+                        <div className="mt-1 flex flex-col gap-3 border-t border-surface-container-high/50 pt-4">
+                          <div className="flex flex-col gap-2 text-xs font-label text-on-surface-variant">
+                            {item.eventTime && (
+                              <span className="flex items-start gap-1">
+                                <span
+                                  className="material-symbols-outlined text-[14px]"
+                                  aria-hidden="true"
+                                >
+                                  schedule
+                                </span>
+                                <span>{item.eventTime}</span>
+                              </span>
+                            )}
+                            {item.venue && (
+                              <span className="flex items-center gap-1 font-semibold text-on-surface">
+                                <span
+                                  className="material-symbols-outlined text-[14px] text-tertiary"
+                                  aria-hidden="true"
+                                >
+                                  location_on
+                                </span>
+                                {item.venue}
+                              </span>
+                            )}
                           </div>
+                          {item.ctaLink && (
+                            <a
+                              href={item.ctaLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2.5 text-center font-label-md text-white shadow-sm transition-colors hover:bg-primary-container hover:text-on-primary-container"
+                            >
+                              <span>View Details</span>
+                              <span
+                                className="material-symbols-outlined text-[16px]"
+                                aria-hidden="true"
+                              >
+                                open_in_new
+                              </span>
+                            </a>
+                          )}
                         </div>
                       </div>
+                    </article>
+                  ))}
+
+                  {activeEventTab === "upcoming" &&
+                    visibleScheduledEvents.length === 0 && (
+                      <div className="col-span-full rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant">
+                        No upcoming events scheduled at the moment. Please check
+                        back soon!
+                      </div>
+                    )}
+                  {activeEventTab === "ongoing" &&
+                    visibleSchedule.length === 0 && (
+                      <div className="col-span-full rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant">
+                        There are no ongoing events listed at the moment.
+                      </div>
+                    )}
+                </>
+              )}
+            </div>
+          ) : (
+            <div
+              key={activeGalleryCategory}
+              className="tab-transition-enter flex flex-col gap-8"
+            >
+              {isGalleryLoading ? (
+                <div
+                  className="rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant"
+                  role="status"
+                  aria-live="polite"
+                >
+                  Loading previous events...
+                </div>
+              ) : (
+                <>
+                  <div
+                    className="flex flex-wrap gap-2"
+                    role="group"
+                    aria-label="Filter previous events by category"
+                  >
+                    {galleryCategories.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        aria-pressed={activeGalleryCategory === category}
+                        onClick={() => setActiveGalleryCategory(category)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${activeGalleryCategory === category ? "bg-secondary text-on-secondary" : "bg-surface-container-lowest text-on-surface-variant hover:text-secondary"}`}
+                      >
+                        {category === "all" ? "All Categories" : category}
+                      </button>
                     ))}
                   </div>
-                </div>
-              ))}
+
+                  {galleryEvents.length === 0 && (
+                    <div className="rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant">
+                      No previous events have been added yet.
+                    </div>
+                  )}
+                  {visibleGalleryEvents.length === 0 &&
+                    galleryEvents.length > 0 && (
+                      <div className="rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest py-12 text-center font-body-sm text-on-surface-variant">
+                        No previous events in this category yet.
+                      </div>
+                    )}
+                  {visibleGalleryEvents.map((event) => (
+                    <article
+                      key={event.eventId}
+                      id={
+                        event.eventId === "seminars-and-officiating"
+                          ? "gallery-event-seminars-and-officiating"
+                          : event.category === "PE Days" &&
+                              visibleGalleryEvents.find(
+                                (galleryEvent) =>
+                                  galleryEvent.category === "PE Days",
+                              )?.eventId === event.eventId
+                            ? "gallery-event-pe-days"
+                            : `gallery-event-${event.eventId}`
+                      }
+                      className="scroll-mt-32 rounded-2xl border border-surface-container-high/60 bg-surface-container-lowest p-5 shadow-sm sm:p-6"
+                    >
+                      <div className="mb-5">
+                        <span className="mb-2 inline-flex rounded-full bg-secondary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary">
+                          {event.category}
+                        </span>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h3 className="font-headline text-xl font-bold text-on-surface">
+                            {event.eventTitle}
+                          </h3>
+                        </div>
+                        {event.eventDesc && (
+                          <p className="mt-2 font-body text-sm text-on-surface-variant leading-relaxed">
+                            {event.eventDesc}
+                          </p>
+                        )}
+                        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-surface-container-high/60 pt-3 text-xs text-on-surface-variant">
+                          {event.eventDate && (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span
+                                className="material-symbols-outlined text-[15px] text-primary"
+                                aria-hidden="true"
+                              >
+                                calendar_today
+                              </span>
+                              <span>
+                                <strong className="text-on-surface">
+                                  Date:
+                                </strong>{" "}
+                                {event.eventDate}
+                              </span>
+                            </span>
+                          )}
+                          {event.eventVenue && (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span
+                                className="material-symbols-outlined text-[15px] text-tertiary"
+                                aria-hidden="true"
+                              >
+                                location_on
+                              </span>
+                              <span>
+                                <strong className="text-on-surface">
+                                  Venue:
+                                </strong>{" "}
+                                {event.eventVenue}
+                              </span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {event.photos.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="mb-3 flex items-center gap-2 font-label-lg text-label-lg font-bold text-on-surface">
+                            <span
+                              className="material-symbols-outlined text-[18px] text-primary"
+                              aria-hidden="true"
+                            >
+                              photo_library
+                            </span>
+                            Event Photos
+                          </h4>
+                          {MARQUEE_CATEGORIES.includes(event.category) ? (
+                            <PhotoMarquee
+                              photos={event.photos}
+                              label={`${event.eventTitle.trim()} photo`}
+                            />
+                          ) : (
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                              {event.photos.map((photo, index) => (
+                                <div
+                                  key={`${event.eventId}-photo-${index}`}
+                                  className="event-photo-card-scene"
+                                  role="button"
+                                  tabIndex={0}
+                                  aria-pressed={
+                                    flippedPhotoCardId ===
+                                    `${event.eventId}-photo-${index}`
+                                  }
+                                  aria-label={`Toggle details for ${photo.photoTitle || event.eventTitle}`}
+                                  onClick={(eventTrigger) =>
+                                    togglePhotoCard(
+                                      `${event.eventId}-photo-${index}`,
+                                      eventTrigger.currentTarget,
+                                    )
+                                  }
+                                  onKeyDown={(eventTrigger) => {
+                                    if (
+                                      eventTrigger.key === "Enter" ||
+                                      eventTrigger.key === " "
+                                    ) {
+                                      eventTrigger.preventDefault();
+                                      togglePhotoCard(
+                                        `${event.eventId}-photo-${index}`,
+                                        eventTrigger.currentTarget,
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <article
+                                    className={`event-photo-card-flipper ${flippedPhotoCardId === `${event.eventId}-photo-${index}` ? "is-flipped" : ""}`}
+                                  >
+                                    <div className="event-photo-card-face event-photo-card-front overflow-hidden rounded-xl border border-surface-container-high/60 bg-surface-container-lowest">
+                                      <ZoomableImage
+                                        alt={
+                                          photo.photoTitle || event.eventTitle
+                                        }
+                                        wrapperClassName="h-48 w-full bg-surface-container"
+                                        className="h-full w-full object-cover"
+                                        src={photo.imgSrc}
+                                      />
+                                      <div className="flex flex-1 flex-col gap-4 p-4">
+                                        {photo.photoTitle && (
+                                          <h4 className="font-label-lg font-bold text-on-surface">
+                                            {photo.photoTitle}
+                                          </h4>
+                                        )}
+                                        {(photo.eventDate || photo.date) && (
+                                          <p className="mt-1 text-xs text-on-surface-variant">
+                                            {photo.eventDate || photo.date}
+                                          </p>
+                                        )}
+                                        {photo.photoDesc && (
+                                          <p className="event-photo-front-desc mt-2 font-body-sm text-sm leading-relaxed text-on-surface-variant">
+                                            {photo.photoDesc}
+                                          </p>
+                                        )}
+                                        <div
+                                          className="mt-auto self-start"
+                                          onClick={(eventTrigger) =>
+                                            eventTrigger.stopPropagation()
+                                          }
+                                          onKeyDown={(eventTrigger) =>
+                                            eventTrigger.stopPropagation()
+                                          }
+                                        >
+                                          <LikeButton
+                                            label={`Like photo: ${photo.photoTitle || event.eventTitle}`}
+                                            icon="favorite"
+                                            storageKey={`event-photo-${event.eventId}-${index}`}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="event-photo-card-face event-photo-card-back rounded-xl border border-primary/25 bg-surface-container-low p-4">
+                                      <div className="flex h-full flex-col gap-3 overflow-y-auto">
+                                        <h4 className="font-label-lg font-bold text-on-surface">
+                                          {photo.photoTitle || event.eventTitle}
+                                        </h4>
+                                        <p className="font-body-sm text-sm leading-relaxed text-on-surface-variant">
+                                          {photo.photoFullDesc ||
+                                            photo.fullDescription ||
+                                            photo.photoDescription ||
+                                            photoFullDescriptions[
+                                              photo.photoTitle
+                                            ] ||
+                                            photo.photoDesc ||
+                                            event.eventDesc}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </article>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {event.videos.length > 0 && (
+                        <div>
+                          <h4 className="mb-3 flex items-center gap-2 font-label-lg text-label-lg font-bold text-on-surface">
+                            <span
+                              className="material-symbols-outlined text-[18px] text-secondary"
+                              aria-hidden="true"
+                            >
+                              video_library
+                            </span>
+                            Event Videos
+                          </h4>
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            {event.videos.map((video, index) => (
+                              <article
+                                key={`${event.eventId}-video-${index}`}
+                                className="overflow-hidden rounded-xl border border-surface-container-high/60 bg-surface-container-lowest"
+                              >
+                                {video.videoEmbed ? (
+                                  <iframe
+                                    src={video.videoEmbed}
+                                    title={video.videoTitle || event.eventTitle}
+                                    className="aspect-video w-full bg-black"
+                                    loading="lazy"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                  />
+                                ) : video.videoSrc ? (
+                                  <video
+                                    src={video.videoSrc}
+                                    className="aspect-video w-full bg-black"
+                                    controls
+                                    preload="metadata"
+                                    playsInline
+                                    aria-label={
+                                      video.videoTitle || event.eventTitle
+                                    }
+                                  >
+                                    Your browser does not support embedded
+                                    videos.
+                                  </video>
+                                ) : (
+                                  <a
+                                    href={video.videoLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex aspect-video items-center justify-center gap-3 bg-inverse-surface px-4 text-center font-semibold text-white transition-colors hover:bg-primary"
+                                  >
+                                    <span
+                                      className="material-symbols-outlined text-4xl"
+                                      aria-hidden="true"
+                                    >
+                                      play_circle
+                                    </span>
+                                    <span>
+                                      {video.videoTitle || "Watch event video"}
+                                    </span>
+                                  </a>
+                                )}
+                                {(video.videoTitle ||
+                                  video.videoDesc ||
+                                  video.videoDescription) && (
+                                  <div className="p-4">
+                                    {video.videoTitle && (
+                                      <h5 className="font-label-lg font-bold text-on-surface">
+                                        {video.videoTitle}
+                                      </h5>
+                                    )}
+                                    {(video.videoDesc ||
+                                      video.videoDescription) && (
+                                      <p className="mt-1 text-sm leading-relaxed text-on-surface-variant">
+                                        {video.videoDesc ||
+                                          video.videoDescription}
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </article>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </>
+              )}
             </div>
           )}
         </div>
       </section>
-
+      {confettiLayer}
     </main>
   );
 }

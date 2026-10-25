@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import SiteSearch from './SiteSearch';
 
 export default function Header() {
   const location = useLocation();
   const path = location.pathname;
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(
+    () =>
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+  );
 
-  // Check initial state from local storage or OS preference
   useEffect(() => {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  }, [isDarkMode]);
 
   const toggleDarkMode = () => {
     if (isDarkMode) {
@@ -31,6 +29,7 @@ export default function Header() {
   
   // State to manage mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Helper to apply active state styles to the current page
   const navClass = (targetPath, isMobile = false) => {
@@ -60,7 +59,13 @@ export default function Header() {
       <div className="h-20 bg-surface-container-lowest/95 backdrop-blur-md px-margin-mobile lg:px-margin flex items-center justify-between relative">
         
         {/* UPPER LEFT LOGO WITH KINETIC ENERGY */}
-        <Link to="/" className="flex items-center gap-space-md group">
+        <div className="flex items-center gap-space-md">
+        <Link
+          to="/"
+          onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })}
+          className="group flex items-center"
+          aria-label="Galóng Galínda home and back to top"
+        >
           
           {/* Animated Spinning Icon Container */}
           <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0">
@@ -74,30 +79,34 @@ export default function Header() {
             <div className="absolute inset-2 rounded-full bg-primary/20 blur-[4px] group-hover:animate-pulse"></div>
             
             {/* Physical Logo */}
-            <img 
-              alt="Galóng Galínda Logo" 
-              className="relative z-10 w-10 h-10 object-contain rounded-full bg-surface-container-lowest shadow-sm" 
-              src="/gallery/sticker%20(2).webp" 
-            />
+            <div className="relative z-10 w-10 h-10 overflow-hidden rounded-full">
+              <img
+                alt="Galóng Galínda Logo"
+                className="block h-full w-full rounded-full object-contain"
+                src="/gallery/galong-galinda-logo-clean.png"
+              />
+            </div>
           </div>
 
-          {/* Text Container (Title + Motto) */}
-          <div className="flex flex-col">
+        </Link>
+
+        {/* Title + Motto link to About Us */}
+        <Link to="/about" aria-label="About Galóng Galínda" className="group flex flex-col">
             <span className="font-headline-sm text-headline-sm font-bold text-primary tracking-tight leading-tight group-hover:text-tertiary transition-colors duration-300">
               GALÓNG GALÍNDA
             </span>
             <span className="font-label-badge text-label-badge text-secondary font-semibold uppercase tracking-wider">
               Patinikang Gâlo, Ipákit Ing Galíng Da
             </span>
-          </div>
-
         </Link>
+        </div>
         
         {/* Desktop Navigation */}
         <nav className="hidden xl:flex items-center gap-space-lg h-full">
           <Link to="/" className={navClass('/')}>Home</Link>
           <Link to="/about" className={navClass('/about')}>About Us</Link>
-          <Link to="/services" className={navClass('/services')}>Products & Services</Link>
+          <Link to="/products" className={navClass('/products')}>Products</Link>
+          <Link to="/services" className={navClass('/services')}>Services</Link>
           <Link to="/events" className={navClass('/events')}>Gallery & Events</Link>
           <Link to="/faq" className={navClass('/faq')}>FAQs</Link>
           <Link to="/contact" className={navClass('/contact')}>Contact Us</Link>
@@ -105,6 +114,19 @@ export default function Header() {
         
         {/* Right Side Icons */}
         <div className="flex items-center gap-space-md">
+          <button
+            type="button"
+            onClick={() => {
+              setIsSearchOpen(true);
+              setIsMobileMenuOpen(false);
+            }}
+            className="flex items-center justify-center rounded-full p-2 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
+            aria-label="Search website"
+            aria-haspopup="dialog"
+            aria-expanded={isSearchOpen}
+          >
+            <span className="material-symbols-outlined text-[22px]" aria-hidden="true">search</span>
+          </button>
           <button 
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-surface-container hover:bg-surface-container-highest text-on-surface-variant transition-colors flex items-center justify-center"
@@ -133,12 +155,14 @@ export default function Header() {
         <nav className="xl:hidden absolute top-full left-0 w-full bg-surface-container-lowest border-t border-surface-container-highest shadow-xl flex flex-col p-4 gap-2 pb-6">
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/', true)}>Home</Link>
           <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/about', true)}>About Us</Link>
-          <Link to="/services" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/services', true)}>Products & Services</Link>
+          <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/products', true)}>Products</Link>
+          <Link to="/services" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/services', true)}>Services</Link>
           <Link to="/events" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/events', true)}>Gallery & Events</Link>
           <Link to="/faq" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/faq', true)}>FAQs</Link>
           <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={navClass('/contact', true)}>Contact Us</Link>
         </nav>
       )}
+      {isSearchOpen && <SiteSearch onClose={() => setIsSearchOpen(false)} />}
     </header>
   );
 }
